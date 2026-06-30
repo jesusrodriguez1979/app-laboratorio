@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   
                   document.getElementById('login-panel').classList.add('hidden');
                   document.getElementById('hub-panel').classList.remove('hidden');
-                  actualizarOpcionesSegunRol();
+                  updateWelcomeScreenVisibility();
                   
                   // Forzar guardado a la nube llamando al localstorage (db.js lo intercepta)
                   localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
@@ -619,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnPersonal = document.getElementById('btn-enter-personal');
     if (btnPersonal) {
       const cardPersonal = btnPersonal.closest('.glass-card');
-      if (sessionUser && sessionUser.role === 'Administrador') {
+      if (sessionUser && (sessionUser.role === 'Administrador' || sessionUser.role === 'Analista')) {
         cardPersonal.style.display = 'block';
       } else {
         cardPersonal.style.display = 'none';
@@ -662,7 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnEnterAdmin = document.getElementById('btn-enter-admin');
   if (btnEnterAdmin) {
     btnEnterAdmin.addEventListener('click', () => {
-      if (sessionUser && sessionUser.role !== 'Administrador') {
+      if (sessionUser && sessionUser.role !== 'Administrador' && sessionUser.role !== 'Analista') {
         alert("Acceso denegado: Se requiere perfil de Administrador");
         return;
       }
@@ -7844,3 +7844,11 @@ window.addEventListener('resize', () => {
   if (window.inspTrendRendimiento) window.inspTrendRendimiento.resize();
 });
 
+
+
+window.abrirLegal = function() {
+  document.getElementById('modal-info-legal').style.display = 'flex';
+};
+window.cerrarLegal = function() {
+  document.getElementById('modal-info-legal').style.display = 'none';
+};

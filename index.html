@@ -957,7 +957,7 @@
 <!-- NEW TAB VIEW: FALLAS FUNCIONALES EN MINA (ANALISTA) -->
 
 <!-- TAB VIEW: OBJETIVOS 2026 -->
-<section class="tab-view" id="view-objetivos">
+<div class="sidebar-content-panel" id="view-objetivos">
 <div class="kpis-container" style="margin-bottom: 24px;">
 <div class="glass-card kpi-card purple" style="flex: 2;">
 <div><div class="kpi-label">Cumplimiento Global 2026</div><div class="kpi-value" id="obj-global-progress">0%</div></div>
@@ -2436,7 +2436,7 @@
 <!-- Script del Controlador de la Aplicación -->
   <script type="module" src="database.js?v=20260630"></script>
 <script src="global-tables.js"></script>
-<script src="app_v3.js?v=20260624_30" type="module"></script>
+<script src="app_v3.js?v=20260624_33" type="module"></script>
 <script src="inventario.js?v=20260627_2024"></script>
 <script src="tiempos.js?v=20260627_2115"></script>
 <!-- MODAL: GESTOR DE ESTÁNDARES QC -->
@@ -2561,7 +2561,7 @@
 </div>
 
     <!-- BOTÓN INFO LEGAL (Flotante) -->
-    <button id="btn-info-legal" class="btn btn-secondary" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; padding: 6px 12px; background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(4px);">
+    <button id="btn-info-legal" onclick="abrirLegal()" class="btn btn-secondary" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; padding: 6px 12px; background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(4px);">
       <i data-lucide="info" style="width: 14px; height: 14px;"></i>
       Informaci&oacute;n Legal
     </button>
@@ -2587,7 +2587,7 @@
           Queda estrictamente prohibida su copia, distribuci&oacute;n o uso indebido sin autorizaci&oacute;n.
         </p>
         <div style="margin-top: 25px;">
-          <button class="btn btn-primary" id="btn-cerrar-legal" style="width: 100%;">Entendido</button>
+          <button class="btn btn-primary" id="btn-cerrar-legal" onclick="cerrarLegal()" style="width: 100%;">Entendido</button>
         </div>
       </div>
     </div>
