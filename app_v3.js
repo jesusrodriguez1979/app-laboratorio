@@ -887,7 +887,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  consoleVisor.querySelectorAll('.menu-item').forEach(item => {
+  
+    consolePersonal.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const target = item.getAttribute('data-target');
+        activarPestañaSidebar(consolePersonal, target);
+      });
+    });
+
+    consoleVisor.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', () => {
       const target = item.getAttribute('data-target');
       activarPestañaSidebar(consoleVisor, target);
