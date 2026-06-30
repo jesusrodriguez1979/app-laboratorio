@@ -1,0 +1,342 @@
+[
+  {
+    "id": "OBJ1 - Capacitaciones MA",
+    "title": "Completar formación en Medio ambiente y Gestión de Calidad necesarias para la elaboración de capacitaciones técnicas a personal operativo enfocadas en el control de aspectos ambientales y control de calidad.",
+    "category": "Nuestra Dotación",
+    "startDate": 46101,
+    "endDate": "31/12/2026",
+    "kpi": "Realizar 10 capacitaciones al personal durante el año. Deben tener firmas de participantes, ser informadas por correo electrónico y almacenadas en la nube.",
+    "stages": [
+      {
+        "title": "Q1 – Formación personal en MA y Calidad",
+        "description": "Completar cursos de formación propios en MA y Gestión de Calidad",
+        "progress": 80
+      },
+      {
+        "title": "Q1-Q2 – Diseño de material capacitación",
+        "description": "Elaborar material técnico para capacitaciones (presentaciones, guías)",
+        "progress": 50
+      },
+      {
+        "title": "Q2 – Capacitaciones 1-3",
+        "description": "Ejecutar primeras 3 capacitaciones con lista de firmas y envío por correo",
+        "progress": 50
+      },
+      {
+        "title": "Q3 – Capacitaciones 4-6",
+        "description": "Ejecutar capacitaciones 4 a 6, almacenar en nube",
+        "progress": 0
+      },
+      {
+        "title": "Q3 – Capacitaciones 7-8",
+        "description": "Ejecutar capacitaciones 7 y 8",
+        "progress": 0
+      },
+      {
+        "title": "Q4 – Capacitaciones 9-10",
+        "description": "Completar las últimas 2 capacitaciones del año",
+        "progress": 0
+      },
+      {
+        "title": "Q4 – Cierre y verificación",
+        "description": "Verificar almacenamiento en nube, firmas y correos de todas las capacitaciones",
+        "progress": 0
+      },
+      {
+        "title": " Cumplimiento del objetivo afectadodebido al parte medico por Lesion en Tibia y Perone (Tiempo de Recuperacion : 6 meses) de la colaboradora tecnica.",
+        "description": "",
+        "progress": 0
+      }
+    ]
+  },
+  {
+    "id": "OBJ2 - Cap. Lubricantes",
+    "title": "Capacitar integralmente al personal técnico de laboratorio de lubricantes mediante un programa de horas prácticas en análisis de lubricantes, logrando que alcance el 100% de autonomía y competencia técnica necesarias para ejecutar suplencias de analista sin supervisión directa antes de marzo de 2027.",
+    "category": "Nuestra Gente",
+    "startDate": 46101,
+    "endDate": "31/03/2027",
+    "kpi": "Hojas de capacitación semanal (2 horas/semana) firmadas por la técnica, colocadas en carpeta compartida.",
+    "stages": [
+      {
+        "title": "Q1 – Diseño programa de capacitación",
+        "description": "Elaborar programa semanal de horas prácticas y carpeta compartida",
+        "progress": 100
+      },
+      {
+        "title": "Q2-Q3 – Ejecución semanas 13-26 (12 h)",
+        "description": "Capacitación: suplencias con supervisión mínima",
+        "progress": 67
+      },
+      {
+        "title": "Q3-Q4 – Ejecución semanas 27-40 (12 h)",
+        "description": "Capacitación: suplencias con supervisión mínima",
+        "progress": 0
+      },
+      {
+        "title": "Q4-Q1 2027 -  Ejecución semanas 41-53 (12 h)",
+        "description": "Capacitación: suplencias con supervisión mínima",
+        "progress": 0
+      },
+      {
+        "title": "Q4 2026 – Evaluación intermedia",
+        "description": "Ejecutar suplencias independientes de analista",
+        "progress": 0
+      },
+      {
+        "title": "Q1 2027 – Suplencias sin supervisión (12 h)",
+        "description": "Ejecutar suplencias independientes de analista",
+        "progress": 0
+      },
+      {
+        "title": "Mar 2027 – Evaluación final autonomía 100%",
+        "description": "Cierre: técnico alcanza 100% autonomía y competencia",
+        "progress": 0
+      },
+      {
+        "title": " Cumplimiento del objetivo afectadodebido al parte medico por Lesion en Tibia y Perone (Tiempo de Recuperacion : 6 meses) de la colaboradora tecnica.",
+        "description": "",
+        "progress": 0
+      }
+    ]
+  },
+  {
+    "id": "OBJ3 - Etiquetado Lubricantes",
+    "title": "Garantizar la correcta disposición de lubricantes a través del desarrollo integral de un sistema de etiquetados y cartillas de referencias técnicas de los puntos críticos de equipos, compartida con el departamento, y colocación de etiquetas en equipos móviles para evitar carga cruzada.",
+    "category": "Nuestro Desempeño",
+    "startDate": 46101,
+    "endDate": "31/12/2026",
+    "kpi": "≥80% de equipos etiquetados con tipo de aceite. Difusión de cartilla respaldada por correo electrónico.",
+    "stages": [
+      {
+        "title": "Q1 – Relevamiento de equipos críticos (DB)",
+        "description": "Identificar todos los equipos y sus puntos de lubricación",
+        "progress": 100
+      },
+      {
+        "title": "Q1 – Diseño cartilla de referencia técnica",
+        "description": "Elaborar cartilla técnica por equipo con tipo de lubricante",
+        "progress": 80
+      },
+      {
+        "title": "Q2 – Difusión cartilla al departamento",
+        "description": "Compartir cartilla por correo y en carpeta compartida",
+        "progress": 0
+      },
+      {
+        "title": "Q2 – Etiquetado equipos moviles (50%)",
+        "description": "Creacion de etiquetas de componentes y lubricantes.",
+        "progress": 80
+      },
+      {
+        "title": "Q3 – Etiquetado equipos móviles",
+        "description": "Instalar etiquetas en todos los equipos móviles prioritarios",
+        "progress": 0
+      },
+      {
+        "title": "Q3 – Verificación cobertura ≥80%",
+        "description": "Auditar porcentaje de equipos etiquetados",
+        "progress": 0
+      },
+      {
+        "title": "Q4 – Cierre y actualización cartilla",
+        "description": "Actualizar cartilla con cambios del año y archivar",
+        "progress": 0
+      },
+      {
+        "title": "AA1",
+        "description": "",
+        "progress": 0
+      }
+    ]
+  },
+  {
+    "id": "OBJ4 - MTTR MTBF",
+    "title": "Desarrollar mis competencias técnicas y analíticas en Mantenimiento proactivo y ciclo de vida de activos. Cursos de 'INTRODUCCIÓN A LA CONFIABILIDAD' y 'GESTIÓN DE ACTIVOS FÍSICOS'. Llevar indicadores MTTR MTBF dentro del laboratorio.",
+    "category": "Nuestro Desempeño",
+    "startDate": 46101,
+    "endDate": "31/12/2026",
+    "kpi": "Datos de MTTR y MTBF registrados mensualmente desde Q2. Reducción de tiempos de detención por fallas en análisis de laboratorio.",
+    "stages": [
+      {
+        "title": "Q2 – Curso Introducción a la Confiabilidad",
+        "description": "Completar curso de Introducción a la Confiabilidad",
+        "progress": 100
+      },
+      {
+        "title": "Q2 – Inicio registro MTTR/MTBF lab",
+        "description": "Implementar hoja de registro de fallas y tiempos de reparación",
+        "progress": 100
+      },
+      {
+        "title": "Q2-Q3 – Curso Gestión de Activos Físicos",
+        "description": "Completar curso de Gestión de Activos Físicos",
+        "progress": 50
+      },
+      {
+        "title": "Q3 – Análisis datos MTTR/MTBF Q2",
+        "description": "Analizar primeros datos e identificar patrones de falla",
+        "progress": 100
+      },
+      {
+        "title": "Q3 – Decisiones estratégicas Q3",
+        "description": "Implementar acciones correctivas basadas en análisis",
+        "progress": 0
+      },
+      {
+        "title": "Q4 – Análisis datos acumulados",
+        "description": "Análisis comparativo Q2 vs Q3 vs Q4",
+        "progress": 0
+      },
+      {
+        "title": "Q4 – Informe anual indicadores lab",
+        "description": "Presentar informe de reducción de tiempos de detención",
+        "progress": 0
+      }
+    ]
+  },
+  {
+    "id": "OBJ5 - Estrategia CBC",
+    "title": "Mejorar la estrategia Condition-Based Component Change (CBC) mediante el análisis oportuno de muestras de fluidos y la generación de reportes técnicos que permitan identificar degradación de componentes y definir intervenciones antes de una falla funcional, contribuyendo a evitar pérdidas operativas.",
+    "category": "Nuestro Desempeño",
+    "startDate": 46102,
+    "endDate": "31/12/2026",
+    "kpi": "≥95% muestras analizadas en tiempo objetivo. ≥90% reportes con recomendación técnica CBC. ≥85% alertas de condición emitidas antes de falla funcional.",
+    "stages": [
+      {
+        "title": "Q1 – Definir tiempo objetivo análisis",
+        "description": "Establecer tiempos límite por tipo de muestra",
+        "progress": 100
+      },
+      {
+        "title": "Q1 – Crear plantilla reporte técnico CBC",
+        "description": "Diseñar formato estándar de reporte con recomendaciones",
+        "progress": 100
+      },
+      {
+        "title": "Q2 – Implementación y seguimiento mes 1-3",
+        "description": "Registrar tiempos de análisis y emisión de reportes",
+        "progress": 100
+      },
+      {
+        "title": "Q2 – Evaluación KPI al cierre Q2",
+        "description": "Medir cumplimiento: ≥95% tiempo / ≥90% reportes",
+        "progress": 100
+      },
+      {
+        "title": "Q3 – Mejora continua y alertas",
+        "description": "Implementar sistema de alertas tempranas de condición",
+        "progress": 25
+      },
+      {
+        "title": "Q3 – Evaluación KPI alertas CBC",
+        "description": "Medir ≥85% alertas emitidas antes de falla funcional",
+        "progress": 0
+      },
+      {
+        "title": "Q4 – Cierre anual y reporte de impacto",
+        "description": "Calcular pérdidas evitadas y mejoras logradas",
+        "progress": 0
+      }
+    ]
+  },
+  {
+    "id": "OBJ6 - Cultura Seguridad",
+    "title": "Fortalecer la cultura de seguridad y el desarrollo técnico del equipo de inspección mediante la participación activa en capacitaciones, el cumplimiento de estándares de seguridad en terreno y la promoción de buenas prácticas durante las actividades de inspección y mantenimiento.",
+    "category": "Nuestra Gente",
+    "startDate": 46102,
+    "endDate": "31/12/2026",
+    "kpi": "100% cumplimiento capacitaciones obligatorias de seguridad y técnicas. ≥2 participaciones trimestrales en charlas de lecciones aprendidas. 0 incidentes en actividades de inspección. Indicadores respaldados con correos.",
+    "stages": [
+      {
+        "title": "Q2 – Capacitaciones obligatorias seguridad",
+        "description": "Asistir y completar todas las capacitaciones Q2",
+        "progress": 100
+      },
+      {
+        "title": "Q2 – Charlas lecciones aprendidas (≥2)",
+        "description": "Participar en ≥2 charlas de lecciones aprendidas Q2",
+        "progress": 100
+      },
+      {
+        "title": "Q3 – Capacitaciones y charlas Q2",
+        "description": "Cumplir 100% capacitaciones y ≥2 charlas Q3",
+        "progress": 0
+      },
+      {
+        "title": "Q4 – Capacitaciones y charlas Q3",
+        "description": "Cumplir 100% capacitaciones y ≥2 charlas Q4",
+        "progress": 0
+      },
+      {
+        "title": "Q3 – Inspección terreno cultura seguridad",
+        "description": "Verificar cumplimiento de estándares en terreno",
+        "progress": 50
+      },
+      {
+        "title": "Q1 2027 – Capacitaciones y charlas Q1",
+        "description": "Cumplir 100% capacitaciones y ≥2 charlas Q1 2027",
+        "progress": 0
+      },
+      {
+        "title": "Q4  – Cierre: 0 incidentes verificado",
+        "description": "Confirmar 0 incidentes anuales, archivar evidencias",
+        "progress": 0
+      },
+      {
+        "title": " Cumplimiento del objetivo afectadodebido al parte medico por Lesion en Tibia y Perone (Tiempo de Recuperacion : 6 meses) de la colaboradora tecnica.",
+        "description": "",
+        "progress": 0
+      }
+    ]
+  },
+  {
+    "id": "OBJ7 - Cultura Ambiental",
+    "title": "Promover la cultura de cuidado ambiental dentro del equipo de mantenimiento mediante charlas técnicas sobre gestión responsable de fluidos, control de contaminación y manejo adecuado de residuos, fortaleciendo la conciencia ambiental en las actividades operativas.",
+    "category": "Nuestra Dotación",
+    "startDate": 46102,
+    "endDate": 46476,
+    "kpi": "≥1 charla ambiental mensual. ≥80% participación del personal convocado con lista de asistencia. ≥2 acciones de mejora ambiental identificadas y documentadas por charla. Indicadores respaldados con correos.",
+    "stages": [
+      {
+        "title": "Q2 – Charlas ambientales Abril-Junio (3)",
+        "description": "Realizar 3 charlas con listas de asistencia y envío por correo",
+        "progress": 30
+      },
+      {
+        "title": "Q2 – Acciones de mejora Q2 (≥6)",
+        "description": "Identificar y documentar ≥6 acciones de mejora en Q2",
+        "progress": 100
+      },
+      {
+        "title": "Q3 – Charlas ambientales julio-sept (3)",
+        "description": "Realizar 3 charlas con ≥80% participación",
+        "progress": 0
+      },
+      {
+        "title": "Q3 – Acciones de mejora Q3 (≥6)",
+        "description": "Documentar e implementar ≥6 acciones de mejora Q3",
+        "progress": 0
+      },
+      {
+        "title": "Q4 – Charlas oct-dic (3)",
+        "description": "Realizar 3 charlas con ≥80% participación",
+        "progress": 0
+      },
+      {
+        "title": "Q4– Acciones de mejora Q4 (≥6) + Informe anual  mejoras ambientales.",
+        "description": "Documentar e implementar ≥6 acciones de mejora Q4+ Generar informe consolidado de charlas y acciones implementadas.",
+        "progress": 0
+      },
+      {
+        "title": "Q1 2027 –Charlas ene-mar (3) +Informe  mejoras ambientales",
+        "description": "Generar informe consolidado de charlas y acciones implementadas. Completar Charlas ≥3",
+        "progress": 0
+      },
+      {
+        "title": " Cumplimiento del objetivo afectadodebido al parte medico por Lesion en Tibia y Perone (Tiempo de Recuperacion : 6 meses) de la colaboradora tecnica.",
+        "description": "",
+        "progress": 0
+      }
+    ]
+  }
+]

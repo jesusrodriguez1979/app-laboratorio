@@ -1,0 +1,2611 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script>
+    window.addEventListener('error', function(e) {
+      const errDiv = document.createElement('div');
+      errDiv.style = 'position:fixed; top:0; left:0; width:100%; z-index:999999; background:red; color:white; padding:40px; font-size:24px; font-weight:bold; word-wrap:break-word;';
+      errDiv.innerHTML = 'CRITICAL ERROR:<br>' + e.message + '<br>Line: ' + e.lineno + '<br>File: ' + e.filename;
+      document.body.appendChild(errDiv);
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      const errDiv = document.createElement('div');
+      errDiv.style = 'position:fixed; top:0; left:0; width:100%; z-index:999999; background:red; color:white; padding:40px; font-size:24px; font-weight:bold; word-wrap:break-word;';
+      errDiv.innerHTML = 'UNHANDLED PROMISE:<br>' + e.reason;
+      document.body.appendChild(errDiv);
+    });
+  </script>
+<title>JR-LABS - Control de Calidad y Operaciones</title>
+<!-- Hojas de Estilo -->
+<link href="style.css?v=20260624_19" rel="stylesheet"/>
+<!-- Librerías Externas vía CDN -->
+<!-- Librerías Externas vía CDN -->
+<!-- ApexCharts para Gráficas de Control y KPIs -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- ECharts para Gráficos Avanzados 3D/Rose -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<!-- SheetJS para Exportación a Excel (.xlsx) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- PDF.js para Procesamiento de Manuales PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- jsPDF para Generación de Reportes PDF Automáticos -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<!-- PptxGenJS para Generar Archivos PowerPoint -->
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<!-- Lucide Icons para Iconografía Moderna -->
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+<!-- Logo oculto para PDF -->
+<img id="pdf-logo-img" src="logo_newmont.png" style="display:none;"/>
+<!-- PANTALLA DE LOGIN -->
+<div class="welcome-screen" id="view-login">
+<div class="welcome-logo" style="letter-spacing: 1px; margin-bottom: 1rem;">
+<img alt="JR-LABS Logo" src="logo_icon.png" style="height: 26px; width: auto; margin-right: 8px; border-radius: 4px;"/>
+<span>JR-LABS</span>
+</div>
+<h2 class="welcome-subtitle" style="margin-bottom: 0.5rem;">Control de Calidad y Operaciones</h2>
+<p class="welcome-desc" style="margin-bottom: 2rem;">Ingrese sus credenciales de acceso para habilitar su perfil en el portal.</p>
+<div class="glass-card" style="width: 380px; padding: 2.25rem; border-color: rgba(0, 47, 108, 0.25); background: rgba(0,0,0,0.45);">
+<form class="form-container" id="form-login" style="display: flex; flex-direction: column; gap: 16px;">
+<div class="form-group" style="text-align: left;">
+<label for="login-username" style="color: #fff; font-weight: 600;">Usuario:</label>
+<input class="form-control" id="login-username" placeholder="Ej: analista" required="" style="width: 100%;" type="text"/>
+</div>
+<div class="form-group" style="text-align: left;">
+<label for="login-password" style="color: #fff; font-weight: 600;">Contraseña:</label>
+<input class="form-control" id="login-password" placeholder="••••••••" required="" style="width: 100%;" type="password"/>
+</div>
+<div class="hidden" id="login-error-msg" style="color: #ef4444; font-size: 0.8rem; font-weight: 600; text-align: center; margin-top: 4px;">
+          Credenciales incorrectas. Intente de nuevo.
+        </div>
+<button class="btn btn-primary" style="width: 100%; margin-top: 8px; font-weight: 600; letter-spacing: 0.5px;" type="submit">
+          Iniciar Sesión <i data-lucide="log-in" style="width:14px; height:14px; margin-left:6px; vertical-align: middle;"></i>
+</button>
+</form>
+</div>
+</div>
+<!-- MENÚ INICIAL HUB (MENÚ DE SELECCIÓN PRINCIPAL) -->
+<div class="welcome-screen hidden" id="welcome-screen">
+<div class="welcome-logo" style="letter-spacing: 1px;">
+<img alt="JR-LABS Logo" src="logo_icon.png" style="height: 52px; width: auto; margin-right: 8px; border-radius: 4px;"/>
+<span>JR-LABS</span>
+</div>
+<h2 class="welcome-subtitle">Portal de Control de Calidad y Gestión Operativa</h2>
+<p class="welcome-desc" style="margin-bottom: 2rem;">
+      Seleccione el módulo al que desea ingresar para visualizar u operar las actividades del laboratorio de lubricantes.
+    </p>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; max-width: 900px;">
+<!-- Tarjeta Gestión Operativa -->
+<div class="glass-card" style="width: 320px; padding: 2rem; display: flex; flex-direction: column; align-items: center; text-align: center; border-color: rgba(59, 130, 246, 0.25);">
+<div class="kpi-icon-container" style="background: rgba(59, 130, 246, 0.1); color: var(--primary); margin-bottom: 1rem; width: 64px; height: 64px; border-radius: 20px; font-size: 1.5rem;">
+<i data-lucide="settings"></i>
+</div>
+<h3 style="font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 8px; color:#fff;">Gestión del Laboratorio</h3>
+<p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.4;">
+          Acceso para Analistas. Gestión de muestras en vivo con cronómetros, registro de fallas, configuración de flota y cartas de control QC.
+        </p>
+<button class="btn btn-primary" id="btn-enter-gestion" style="width: 100%;">
+          Gestión de Laboratorio
+          <i data-lucide="lock" style="width:14px; height:14px; margin-left:6px;"></i>
+</button>
+</div><div class="glass-card" style="width: 320px; padding: 2rem; display: flex; flex-direction: column; align-items: center; text-align: center; border-color: rgba(59, 130, 246, 0.25);">
+<div class="kpi-icon-container" style="background: rgba(59, 130, 246, 0.1); color: var(--primary); margin-bottom: 1rem; width: 64px; height: 64px; border-radius: 20px; font-size: 1.5rem;">
+<i data-lucide="settings"></i>
+</div>
+<h3 style="font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 8px; color:#fff;"> Gestión de Personal</h3>
+<p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.4;">Módulos de liderazgo, capacitaciones y objetivos.</p>
+<button class="btn btn-primary" id="btn-enter-personal" style="width: 100%; background: var(--secondary); color: white;">Gestión de Personal
+            <i data-lucide="lock" style="width:14px; height:14px; margin-left:6px;"></i>
+</button>
+</div>
+<!-- Tarjeta Inspección del Laboratorio -->
+<div class="glass-card" style="width: 320px; padding: 2rem; display: flex; flex-direction: column; align-items: center; text-align: center; border-color: rgba(139, 92, 246, 0.25);">
+<div class="kpi-icon-container" style="background: rgba(139, 92, 246, 0.1); color: var(--purple); margin-bottom: 1rem; width: 64px; height: 64px; border-radius: 20px; font-size: 1.5rem;">
+<i data-lucide="eye"></i>
+</div>
+<h3 style="font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 8px; color:#fff;">Inspección Laboratorio</h3>
+<p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.4;">
+          Menú de Observación. Visualización en tiempo real del estado de muestras y KPIs del laboratorio sin permisos de modificación.
+        </p>
+<button class="btn btn-success" id="btn-enter-inspeccion" style="width: 100%; background: var(--purple); box-shadow: 0 4px 14px var(--purple-glow);">
+          Panel Laboratorio
+          <i data-lucide="arrow-right" style="width:14px; height:14px; margin-left:6px;"></i>
+</button>
+</div>
+<!-- Tarjeta Administración del Sistema -->
+<div class="glass-card" style="width: 320px; padding: 2rem; display: flex; flex-direction: column; align-items: center; text-align: center; border-color: rgba(16, 185, 129, 0.25); display: none;">
+<div class="kpi-icon-container" style="background: rgba(16, 185, 129, 0.1); color: #10b981; margin-bottom: 1rem; width: 64px; height: 64px; border-radius: 20px; font-size: 1.5rem;">
+<i data-lucide="shield"></i>
+</div>
+<h3 style="font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 8px; color:#fff;">Administración</h3>
+<p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.4;">
+          Gestión de Cuentas. Creación de usuarios, asignación de roles y generación de contraseñas de acceso al sistema.
+        </p>
+<button class="btn btn-success" id="btn-enter-admin" style="width: 100%; background: #10b981; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);">
+          Gestión de Cuentas
+          <i data-lucide="arrow-right" style="width:14px; height:14px; margin-left:6px;"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- CONSOLE 1: GESTIÓN OPERATIVA (Módulo de Modificaciones del Analista) -->
+<div class="app-container tab-branch hidden" id="console-gestion">
+<!-- SIDEBAR GESTIÓN -->
+<aside class="sidebar">
+<div class="sidebar-logo">
+<img alt="JR-LABS Logo" src="logo_icon.png" style="width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; margin-right: 12px; border-radius: 4px;"/>
+<div class="logo-text-container">
+<span class="logo-title">JR-LABS</span>
+<span class="logo-subtitle">Gestión Analista</span>
+</div>
+</div>
+<nav style="flex-grow: 1;">
+<ul class="sidebar-menu">
+<li>
+<button class="menu-item active" data-target="view-equipos">
+<i data-lucide="sliders"></i>
+              Configuración de Laboratorio
+            </button>
+</li>
+<li>
+<button class="menu-item" data-target="view-muestras">
+<i data-lucide="clock"></i>
+              Muestras Ingresadas
+            </button>
+</li>
+<li>
+<button class="menu-item" data-target="view-qc">
+<i data-lucide="bar-chart-2"></i>
+              Estándares &amp; QC
+            </button>
+</li>
+<li>
+<button class="menu-item" data-target="view-flota">
+<i data-lucide="truck"></i>
+              Configuración Flota
+            </button>
+</li>
+<li>
+<button class="menu-item" data-target="view-fallas-funcionales">
+<i data-lucide="alert-octagon"></i>
+              Fallas Funcionales
+            </button>
+</li>
+
+
+<li>
+<button class="menu-item" data-target="view-etiquetado">
+<i data-lucide="tags"></i>
+              Equipos Etiquetados
+            </button>
+</li>
+
+<li>
+<button class="menu-item" data-target="view-historial">
+<i data-lucide="database"></i>
+              Historial de Muestras
+            </button>
+</li>
+<li>
+<button class="menu-item" data-target="view-inventario">
+<i data-lucide="package"></i>
+              Inventario y Costos
+            </button>
+</li>
+
+</ul>
+</nav>
+<div class="sidebar-footer" style="display:flex; flex-direction:column; gap:8px;">
+<button class="btn btn-secondary btn-sm btn-back-hub" style="width: 100%;">
+<i data-lucide="home"></i>
+          Menú Inicial
+        </button>
+<button class="btn btn-secondary btn-sm btn-logout" style="width: 100%;">
+<i data-lucide="log-out"></i>
+          Cerrar Sesión
+        </button>
+<div class="system-status">
+<span class="status-indicator"></span>
+<span>Modo Gestión</span>
+</div>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL GESTIÓN -->
+<main class="main-content">
+<!-- HEADER GLOBAL GESTIÓN -->
+<header class="main-header">
+<div class="header-info">
+<h1 id="view-title">Disponibilidad de Equipos</h1>
+<p id="view-subtitle">Monitoreo de KPIs, fallas operativas y mantenimiento de instrumentos</p>
+</div>
+<div class="header-actions">
+<span class="badge badge-info" id="time-badge-gestion" style="font-family: monospace;">14/06/2026 12:00</span>
+</div>
+</header>
+<!-- TAB VIEW: DISPONIBILIDAD -->
+<section class="tab-view active" id="view-equipos">
+<div class="kpis-container">
+<div class="glass-card kpi-card info">
+<div>
+<div class="kpi-label">Disponibilidad Promedio</div>
+<div class="kpi-value" id="kpi-equipos-disponibilidad">97.8%</div>
+</div>
+<div class="kpi-icon-container"><i data-lucide="percent"></i></div>
+</div>
+<div class="glass-card kpi-card danger">
+<div>
+<div class="kpi-label">MTTR General (Reparación)</div>
+<div class="kpi-value" id="kpi-equipos-mttr">2.4 h</div>
+</div>
+<div class="kpi-icon-container"><i data-lucide="wrench"></i></div>
+</div>
+<div class="glass-card kpi-card success">
+<div>
+<div class="kpi-label">MTBF Promedio</div>
+<div class="kpi-value" id="kpi-equipos-mtbf">348 h</div>
+</div>
+<div class="kpi-icon-container"><i data-lucide="activity"></i></div>
+</div>
+<div class="glass-card kpi-card warning">
+<div>
+<div class="kpi-label">Fallas en el Periodo</div>
+<div class="kpi-value" id="kpi-equipos-fallas">5</div>
+</div>
+<div class="kpi-icon-container"><i data-lucide="alert-triangle"></i></div>
+</div>
+</div>
+<div class="dashboard-grid">
+<div class="glass-card col-8">
+<h3 style="font-family:var(--font-heading); font-size:1.25rem; margin-bottom:1.5rem;">Análisis de Fallas Recurrentes y Tiempos de Reparación</h3>
+<div id="chart-failures-recurrent" style="min-height: 250px;"></div>
+</div>
+<div class="glass-card col-4">
+<h3 style="font-family:var(--font-heading); font-size:1.25rem; margin-bottom: 1.25rem;">Fallas Recurrentes</h3>
+<div class="failures-summary-row" id="failures-summary-list"></div>
+</div>
+<div class="glass-card col-12 table-card">
+<div class="table-header-row">
+<h2>Equipos del Laboratorio</h2>
+<div style="display: flex; gap: 10px;">
+<button class="btn btn-success btn-sm" id="btn-show-add-equip-pdf">
+<i data-lucide="plus-circle"></i> Añadir Equipo (PDF)
+                </button>
+<button class="btn btn-primary btn-sm" id="btn-show-add-failure">
+<i data-lucide="plus-circle"></i> Registrar Falla / Detención
+                </button>
+</div>
+</div>
+<div class="table-wrapper">
+<table class="custom-table">
+<thead>
+<tr>
+<th>Instrumento</th>
+<th>Ubicación / Área</th>
+<th>Estado</th>
+<th>MTTR (Horas)</th>
+<th>MTBF (Horas)</th>
+<th>Disponibilidad</th>
+<th>Acciones</th>
+<th style="text-align: center;">Manual &amp; Soporte</th>
+</tr>
+</thead>
+<tbody id="equipos-table-body"></tbody>
+</table>
+</div>
+</div>
+<!-- NUEVA SECCIÓN: CONFIGURACIÓN DE MUESTRAS POR MODELO DE EQUIPO -->
+<div class="glass-card col-12" style="padding: 1.5rem; margin-top: 24px;">
+<div class="table-header-row" style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 1rem; display:flex; justify-content:space-between; align-items:center;">
+<div>
+<h2 style="font-family:var(--font-heading); font-size:1.25rem;">Configuración de Muestras y Análisis por Modelo de Equipo</h2>
+<p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Defina qué compartimentos/muestras se analizan para cada modelo de equipo y sus límites técnicos.</p>
+</div>
+<div style="display:flex; gap:10px; align-items:center;">
+<label for="select-config-model" style="font-size:0.8rem; font-weight:600; color:#fff;">Modelo:</label>
+<select class="form-control" id="select-config-model" style="width:180px; font-size:0.8rem; height:32px; padding:2px 8px;"></select>
+<button class="btn btn-secondary btn-sm" id="btn-add-config-model" style="padding: 4px 10px; font-size:0.75rem;">+ Nuevo Modelo</button>
+<button class="btn btn-danger btn-sm" id="btn-delete-config-model" style="padding: 4px 10px; font-size:0.75rem;" title="Eliminar este modelo de la configuración">
+<i data-lucide="trash-2" style="width:14px; height:14px;"></i> Eliminar Modelo
+                </button>
+</div>
+</div>
+<!-- Tabla de Muestras configuradas para el modelo seleccionado -->
+<div class="table-wrapper" style="margin-bottom: 1.5rem;">
+<table class="custom-table">
+<thead>
+<tr>
+<th style="width:200px;">Muestra / Componente</th>
+<th>Análisis Asignados y Criterios de Evaluación (Límites)</th>
+<th style="text-align:center; width:120px;">Acciones</th>
+</tr>
+</thead>
+<tbody id="model-config-samples-body">
+<!-- Generado dinámicamente -->
+</tbody>
+</table>
+</div>
+<!-- Botones de Acción -->
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<button class="btn btn-secondary btn-sm" id="btn-add-sample-point">
+<i data-lucide="plus-circle"></i> Agregar Muestra / Componente
+              </button>
+<div style="display:flex; gap:10px; align-items:center;">
+<input accept=".xlsx, .xls" id="input-excel-config" style="display:none;" type="file"/>
+<button class="btn btn-secondary btn-sm" id="btn-view-config-json" style="background:#3b82f6; color:#fff; border:none;" title="Ver toda la base de datos de modelos actual">
+<i data-lucide="database"></i> Ver BD Cargada
+                </button>
+<button class="btn btn-secondary btn-sm" id="btn-import-config-excel" style="background:#10b981; color:#fff; border:none;" title="Permite subir un Excel para completar o agregar datos">
+<i data-lucide="upload"></i> Actualizar Datos (Excel)
+                </button>
+<button class="btn btn-primary btn-sm" id="btn-save-model-config" title="Guarda solo los cambios manuales del modelo en pantalla">
+<i data-lucide="save"></i> Guardar Cambios Manuales
+                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- TAB VIEW: MUESTRAS INGRESADAS -->
+<section class="tab-view" id="view-muestras">
+<div class="kpis-container">
+<div class="glass-card kpi-card info">
+<div>
+<div class="kpi-label">Muestras Activas</div>
+<div class="kpi-value" id="kpi-muestras-activas">3</div>
+</div>
+<div class="kpi-icon-container"><i data-lucide="flask"></i></div>
+</div>
+<div class="glass-card kpi-card success">
+<div>
+<div class="kpi-label">Muestras Completadas</div>
+<div class="kpi-value" id="kpi-muestras-completas">8</div>
+</div>
+<div class="kpi-icon-container"><i data-lucide="check-circle-2"></i></div>
+</div>
+<div class="glass-card kpi-card warning">
+<div>
+<div class="kpi-label">Tiempo Espera Promedio</div>
+<div class="kpi-value" id="kpi-muestras-espera-avg">12.5 min</div>
+</div>
+<div class="kpi-icon-container"><i data-lucide="hourglass"></i></div>
+</div>
+<div class="glass-card kpi-card purple">
+<div>
+<div class="kpi-label">Tiempo Análisis Promedio</div>
+<div class="kpi-value" id="kpi-muestras-analisis-avg">28.4 min</div>
+<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; line-height: 1.3;">Tiempo efectivo desde el inicio de las pruebas hasta la emisión del reporte.</div>
+</div>
+<div class="kpi-icon-container"><i data-lucide="gauge"></i></div>
+</div>
+</div>
+<div class="dashboard-grid">
+<div class="glass-card col-12" style="padding: 1.5rem;">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 1rem;">
+<h2 style="font-family:var(--font-heading); font-size:1.25rem;">Monitoreo y Control Analítico en Tiempo Real</h2>
+<button class="btn btn-primary" id="btn-show-add-sample">
+<i data-lucide="plus"></i> Ingresar Lote de Muestras
+              </button>
+</div>
+<div id="active-samples-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 2rem;"></div>
+</div>
+<div class="glass-card col-12 table-card">
+<div class="table-header-row">
+<div>
+<h2>Planilla de Tiempos Analíticos y Muestras Procesadas</h2>
+</div>
+<div style="display: flex; gap: 10px;">
+<button class="btn btn-primary" id="btn-export-batch-pdf">
+<i data-lucide="file-text"></i> Generar Reporte Lote (Día)
+                </button>
+<button class="btn btn-success" id="btn-export-excel">
+<i data-lucide="file-spreadsheet"></i> Descargar Planilla (.xlsx)
+                </button>
+</div>
+</div>
+<div class="table-wrapper">
+<table class="custom-table">
+<thead>
+<tr>
+<th style="width: 40px; text-align: center;"><i data-lucide="check-square"></i></th>
+<th>Lote ID</th>
+<th>Cant.</th>
+<th>Hora Ingreso</th>
+<th>Observaciones</th>
+<th>Datos Faltantes</th>
+<th>T. Espera (m)</th>
+<th>T. Análisis (m)</th>
+<th>T. Reporte (m)</th>
+<th>T. Repeticiones (m)</th>
+<th>T. Falla Resol (m)</th>
+<th>Total Proceso</th>
+<th>T. Prom. Muestra (m)</th>
+<th style="width: 60px; text-align: center;">Acciones</th>
+</tr>
+</thead>
+<tbody id="completed-samples-table-body"></tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- TAB VIEW: ESTÁNDARES & QC -->
+<section class="tab-view" id="view-qc">
+<div class="glass-card col-12" style="padding: 1.5rem; margin-bottom: 24px;">
+<div class="qc-standard-selector">
+<div class="form-group select-custom">
+<label for="qc-select-standard">Seleccionar Estándar de Referencia / Aceite Patrón:</label>
+<select class="form-control" id="qc-select-standard"></select>
+</div>
+<div style="display: flex; align-items: flex-end; gap: 8px;">
+<button class="btn btn-primary" id="btn-show-add-qc-run" onclick="if(window.abrirModalAddQCRun) window.abrirModalAddQCRun();"><i data-lucide="plus-circle"></i> Añadir Ensayo QC</button>
+<button class="btn btn-secondary" id="btn-show-create-standard" onclick="if(window.abrirGestorQC) window.abrirGestorQC(); else alert('Cargando módulo, intente de nuevo.');"><i data-lucide="settings"></i> Gestionar Estándares</button>
+</div>
+</div>
+</div>
+<div class="kpis-container" id="qc-stats-container">
+<div class="glass-card kpi-card info">
+<div><div class="kpi-label">Valor Nominal</div><div class="kpi-value" id="qc-val-nominal">100.0 cSt</div></div>
+<div class="kpi-icon-container"><i data-lucide="crosshair"></i></div>
+</div>
+<div class="glass-card kpi-card purple">
+<div><div class="kpi-label">Media del Proceso</div><div class="kpi-value" id="qc-val-mean">99.85 cSt</div></div>
+<div class="kpi-icon-container"><i data-lucide="git-commit"></i></div>
+</div>
+<div class="glass-card kpi-card warning">
+<div><div class="kpi-label">Desviación Estándar (SD)</div><div class="kpi-value" id="qc-val-sd">1.42 cSt</div></div>
+<div class="kpi-icon-container"><i data-lucide="trending-up"></i></div>
+</div>
+<div class="glass-card kpi-card success" id="qc-status-card">
+<div><div class="kpi-label">Estado Calibración</div><div class="kpi-value" id="qc-val-status">Estable</div></div>
+<div class="kpi-icon-container"><i data-lucide="check"></i></div>
+</div>
+</div>
+<div class="dashboard-grid">
+<div class="glass-card col-8">
+<h3 style="font-family:var(--font-heading); font-size:1.25rem; margin-bottom: 1rem;">Carta de Control Levey-Jennings (Límites ±1SD, ±2SD, ±3SD)</h3>
+<div id="chart-qc-levey-jennings" style="min-height: 350px;"></div>
+</div>
+<div class="glass-card col-4">
+<h3 style="font-family:var(--font-heading); font-size:1.25rem; margin-bottom: 1rem;">Análisis Estadístico Automatizado</h3>
+<div class="westgard-alert-box normal" id="westgard-advisory-box">
+<div class="westgard-alert-icon"><i data-lucide="check-circle"></i></div>
+<div class="westgard-alert-content">
+<h4 id="westgard-status-title">Sin Anomalías</h4>
+<p id="westgard-status-desc">Calibración en rango nominal.</p>
+</div>
+</div>
+<h3 style="font-family:var(--font-heading); font-size:1.1rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">Historial de Ensayos QC</h3>
+<div class="table-wrapper" style="max-height: 160px; overflow-y: auto;">
+<table class="custom-table" style="font-size: 0.8rem;">
+<thead><tr><th>Fecha</th><th>Valor</th><th>Desviación</th></tr></thead>
+<tbody id="qc-runs-history-body"></tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- NEW TAB VIEW: CONFIGURACIÓN FLOTA (ANALISTA) -->
+<section class="tab-view" id="view-flota">
+<!-- Tarjeta de Importación y Carga -->
+<div class="glass-card col-12" style="padding: 1.5rem; margin-bottom: 24px;">
+<h2 style="font-family: var(--font-heading); font-size:1.4rem; margin-bottom: 8px; color: #fff;">Base de Datos de Flota y Componentes</h2>
+<p style="font-size: 0.85rem; color: var(--text-muted); line-height:1.4; margin-bottom: 1.5rem;">
+            Suba un archivo Excel (.xlsx, .xls) o CSV con las columnas de su flota para recrearla dinámicamente. Defina qué componentes se clasificarán como <strong>Componentes Mayores</strong> e investigue sus ubicaciones SAP.
+          </p>
+<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+<button class="btn btn-primary" id="btn-trigger-upload">
+<i data-lucide="upload" style="width:16px; height:16px; margin-right:8px; vertical-align: middle;"></i>
+              Cargar Excel / CSV de Flota
+            </button>
+<input accept=".xlsx, .xls, .csv" id="fleet-upload-input" style="display: none;" type="file"/>
+<button class="btn btn-secondary" id="btn-export-template">
+<i data-lucide="download" style="width:16px; height:16px; margin-right:8px; vertical-align: middle;"></i>
+              Descargar Plantilla Excel
+            </button>
+<span style="font-size: 0.75rem; color: var(--text-muted);">
+              Columnas: #, Código Equipo, Nombre del Equipo, Ubicación Técnica, Componente, Viscosidad / Grado, Lubricante / Fluido Recomendado (Fábrica), Lubricante / Fluido Actual, Capacidad (L), Observaciones
+            </span>
+</div>
+</div>
+<!-- Tarjeta de Filtros de Búsqueda -->
+<div class="glass-card col-12" style="padding: 1.5rem; margin-bottom: 24px;">
+<h3 style="font-family: var(--font-heading); font-size: 1.1rem; margin-bottom: 16px; color: #fff;">Filtros de Búsqueda de Flota</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+<div class="form-group">
+<label for="filter-fleet-marca">Marca:</label>
+<select class="form-control" id="filter-fleet-marca">
+<option value="">Todas</option>
+</select>
+</div>
+<div class="form-group">
+<label for="filter-fleet-modelo">Modelo:</label>
+<select class="form-control" id="filter-fleet-modelo">
+<option value="">Todos</option>
+</select>
+</div>
+<div class="form-group">
+<label for="filter-fleet-equipo">Equipo:</label>
+<select class="form-control" id="filter-fleet-equipo">
+<option value="">Todos</option>
+</select>
+</div>
+<div class="form-group">
+<label for="filter-fleet-sap">Ubicación SAP:</label>
+<input class="form-control" id="filter-fleet-sap" placeholder="Buscar ubicación SAP..." type="text"/>
+</div>
+<div class="form-group">
+<label for="filter-fleet-lube">Lubricante Utilizado:</label>
+<select class="form-control" id="filter-fleet-lube">
+<option value="">Todos</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Tabla de Flota -->
+<div class="glass-card table-card col-12">
+<div class="table-header-row" style="border-bottom: 1px solid var(--panel-border); padding-bottom: 12px; margin-bottom: 8px;">
+<h2>Componentes y Fluidos Registrados</h2>
+</div>
+<div class="table-wrapper">
+<table class="custom-table" id="fleet-table">
+<thead>
+<tr>
+<th style="text-align: center; width: 40px;">#</th>
+<th>Código Equipo</th>
+<th>Nombre del Equipo</th>
+<th>Ubicación Técnica</th>
+<th>Componente</th>
+<th>Viscosidad / Grado</th>
+<th>Lubricante Recomendado</th>
+<th>Lubricante Actual</th>
+<th>Capacidad (L)</th>
+<th>Observaciones</th>
+<th style="text-align: center;">¿Componente Mayor?</th>
+</tr>
+</thead>
+<tbody id="fleet-table-body">
+<!-- Se cargará dinámicamente -->
+</tbody>
+</table>
+</div>
+<div id="fleet-empty-message" style="text-align: center; color: var(--text-muted); padding: 3rem 0; display: none; font-style: italic; font-size: 0.9rem;">
+            No se encontraron componentes en la flota con los filtros seleccionados.
+          </div>
+</div>
+</section>
+<!-- NEW TAB VIEW: FALLAS FUNCIONALES EN MINA (ANALISTA) -->
+<section class="tab-view" id="view-fallas-funcionales">
+<div class="dashboard-grid">
+<!-- Formulario de Ingreso -->
+<div class="glass-card col-4">
+<h3 class="form-title">Registrar Falla Funcional Real</h3>
+<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">
+              Registre las fallas funcionales ocurridas en mina para calcular la eficacia predictiva de las alertas del laboratorio.
+            </p>
+<form class="form-container" id="form-add-functional-failure">
+<div class="form-group">
+<label for="ff-select-equip">Equipo Minero:</label>
+<select class="form-control" id="ff-select-equip" required=""></select>
+</div>
+<div class="form-group">
+<label for="ff-select-comp">Componente Afectado:</label>
+<select class="form-control" id="ff-select-comp" required="">
+<option value="Motor">Motor</option>
+<option value="Transmision">Transmisión</option>
+<option value="Hidraulico">Hidráulico</option>
+</select>
+</div>
+<div class="form-group">
+<label for="ff-date">Fecha de Ocurrencia de la Falla:</label>
+<input class="form-control" id="ff-date" required="" type="date"/>
+</div>
+<div class="form-group">
+<label for="ff-desc">Observaciones de la Falla:</label>
+<input class="form-control" id="ff-desc" placeholder="Ej. Rotura de engranajes por sobrecarga" required="" type="text"/>
+</div>
+<button class="btn btn-danger" style="margin-top: 8px;" type="submit">
+<i data-lucide="plus-circle"></i> Registrar Falla Funcional
+              </button>
+</form>
+</div>
+<!-- Histórico de Fallas Reales -->
+<div class="glass-card col-8 table-card">
+<div class="table-header-row">
+<h2>Historial de Fallas Funcionales Reales en Mina</h2>
+</div>
+<div class="table-wrapper" style="max-height: 400px; overflow-y: auto;">
+<table class="custom-table">
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Equipo</th>
+<th>Componente</th>
+<th>Observaciones de Falla</th>
+<th>Alerta Previa Detectada</th>
+</tr>
+</thead>
+<tbody id="functional-failures-table-body">
+<!-- Dinámico -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- TAB VIEW: OBJETIVOS 2026 -->
+
+<!-- TAB VIEW: GENERADOR CHARLAS IA -->
+
+<!-- SECCIÓN: EQUIPOS ETIQUETADOS -->
+<section class="tab-view" id="view-etiquetado">
+<!-- Dashboard Stats -->
+<div id="etiquetado-dashboard" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
+<!-- Generado dinámicamente -->
+</div>
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px; align-items: start;">
+<!-- Formulario -->
+<div class="glass-card" style="padding: 20px;">
+<h3 style="margin: 0 0 15px 0; font-family: var(--font-heading); color: var(--primary);">Registrar Nuevo Equipo</h3>
+<form id="form-etiquetado" style="display: flex; flex-direction: column; gap: 15px;">
+<div class="form-group">
+<label>Fecha de Etiquetado:</label>
+<input class="form-control" id="etiq-fecha" required="" type="date"/>
+</div>
+<div class="form-group">
+<label>Código del Equipo:</label>
+<input class="form-control" id="etiq-codigo" placeholder="Ej: EX-05" required="" type="text"/>
+</div>
+<div class="form-group">
+<label>Modelo del Equipo:</label>
+<input autocomplete="off" class="form-control" id="etiq-modelo" list="etiq-modelos-list" placeholder="Ej: DS 311" required="" type="text"/>
+<datalist id="etiq-modelos-list"></datalist>
+<small style="color: var(--text-muted); font-size: 0.75rem;">Escribe libremente o selecciona de la lista.</small>
+</div>
+<div class="form-group">
+<label>Componentes (Fluidos):</label>
+<div style="display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.05);">
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal; margin:0; cursor:pointer;"><input name="etiq-comp" type="checkbox" value="Motor"/> Motor</label>
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal; margin:0; cursor:pointer;"><input name="etiq-comp" type="checkbox" value="Sistema Hidráulico"/> Sistema Hidráulico</label>
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal; margin:0; cursor:pointer;"><input name="etiq-comp" type="checkbox" value="Transmisión"/> Transmisión</label>
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal; margin:0; cursor:pointer;"><input name="etiq-comp" type="checkbox" value="Diferencial"/> Diferencial</label>
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal; margin:0; cursor:pointer;"><input name="etiq-comp" type="checkbox" value="Mandos Finales"/> Mandos Finales</label>
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal; margin:0; cursor:pointer;"><input name="etiq-comp" type="checkbox" value="Refrigerante"/> Refrigerante</label>
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal; margin:0; cursor:pointer;"><input name="etiq-comp" type="checkbox" value="Grasa/Rodamientos"/> Grasa/Rodamientos</label>
+</div>
+</div>
+<div id="contenedor-fotos-dinamicas" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+<!-- Component photo inputs will be generated here -->
+</div>
+<button class="btn btn-primary" style="margin-top: 10px;" type="submit">
+<i data-lucide="save"></i> Registrar Equipo
+              </button>
+</form>
+</div>
+<!-- Tabla de Historial -->
+<div class="glass-card" style="padding: 20px; overflow-x: auto;">
+<h3 style="margin: 0 0 15px 0; font-family: var(--font-heading); color: var(--primary);">Historial de Registros</h3>
+<table class="data-table" id="tabla-etiquetado" style="width: 100%; min-width: 600px;">
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Código</th>
+<th>Modelo</th>
+<th>Componentes</th>
+<th style="text-align:center;">Foto</th>
+<th style="text-align:center;">Acciones</th>
+</tr>
+</thead>
+<tbody id="tbody-etiquetado">
+<!-- Filas inyectadas por JS -->
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- SECCIÓN: CAPACITACIONES -->
+
+<!-- SECCIÓN: HISTORIAL DE MUESTRAS (BIG DATA) -->
+<section class="tab-view" id="view-historial">
+<div class="glass-card col-12" style="padding: 1.5rem; margin-bottom: 24px;">
+<h2 style="font-family: var(--font-heading); font-size:1.4rem; margin-bottom: 8px; color: #fff;">Bóveda de Historial Estadístico</h2>
+<p style="font-size: 0.85rem; color: var(--text-muted); line-height:1.4; margin-bottom: 1.5rem;">
+            Suba su archivo Excel histórico sin contraseña para poblar la base de datos de Big Data (IndexedDB). Puede añadir nuevos registros mensuales o reemplazar la bóveda entera.
+          </p>
+<div style="display:flex; gap:10px; align-items:center;">
+<button class="btn btn-primary" id="btn-trigger-historial-append">
+<i data-lucide="database" style="width:16px; height:16px; margin-right:8px; vertical-align: middle;"></i>
+              Añadir Nuevos Datos (.xlsx, .csv)
+            </button>
+<button class="btn btn-secondary" id="btn-trigger-historial-override">
+<i data-lucide="upload-cloud"></i> Reemplazar Bóveda Completa
+            </button>
+<input accept=".xlsx, .xls, .csv" id="historial-upload-input" style="display: none;" type="file"/>
+<button class="btn btn-danger" id="btn-clear-historial" style="display: none;">
+<i data-lucide="trash-2"></i> Purgar
+            </button>
+<span id="historial-status" style="color: var(--primary); font-size: 0.9rem; font-weight: bold; margin-left:15px;"></span>
+</div>
+</div>
+<!-- Tabla de Navegación del Historial -->
+<div class="glass-card table-card col-12">
+<div class="table-header-row" style="border-bottom: 1px solid var(--panel-border); padding-bottom: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+<h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff;">Navegador de Historial</h3>
+<div style="display: flex; gap: 10px; align-items: center;">
+<input class="form-control" id="historial-search-input" placeholder="Buscar por equipo, componente, código..." style="width: 250px;" type="text"/>
+<button class="btn btn-secondary btn-sm" id="btn-historial-prev"><i data-lucide="chevron-left"></i></button>
+<span id="historial-page-info" style="color: var(--text-muted); font-size: 0.85rem;">Pág. 1 / 1</span>
+<button class="btn btn-secondary btn-sm" id="btn-historial-next"><i data-lucide="chevron-right"></i></button>
+</div>
+</div>
+<div class="table-responsive">
+<table class="custom-table" style="width: 100%;">
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Equipo</th>
+<th>Componente</th>
+<th>Condición</th>
+<th>Fe (ppm)</th>
+<th>Visc 100°C</th>
+<th>Código ISO</th>
+</tr>
+</thead>
+<tbody id="tbody-historial">
+</tbody>
+</table>
+</div>
+<div id="historial-empty-message" style="text-align: center; color: var(--text-muted); padding: 3rem 0; display: none; font-style: italic; font-size: 0.9rem;">
+            La bóveda histórica está vacía o no hay coincidencias.
+          </div>
+</div>
+</section>
+<!-- SECCIÓN: INVENTARIO Y COSTOS -->
+<section class="tab-view" id="view-inventario">
+<div class="inventario-tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; flex-wrap:wrap;">
+<button class="btn btn-secondary inv-tab-btn active" data-invtab="inv-dashboard"><i data-lucide="pie-chart"></i> Panel de Control</button>
+<button class="btn btn-secondary inv-tab-btn" data-invtab="inv-catalogo"><i data-lucide="package"></i> Catálogo de Insumos</button>
+<button class="btn btn-secondary inv-tab-btn" data-invtab="inv-movimientos"><i data-lucide="arrow-right-left"></i> Movimientos (Stock)</button>
+</div>
+<!-- TAB: DASHBOARD -->
+<div class="inv-tab-content" id="inv-dashboard" style="display:block;">
+<h3 style="margin-bottom:15px;"><i data-lucide="activity"></i> Resumen de Consumos (Costo y Cantidad)</h3>
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:15px; margin-bottom:20px;">
+<div class="glass-card stat-card">
+<div class="stat-title">Consumo (7 Días)</div>
+<div class="stat-value" id="inv-kpi-7d-costo">$ 0.00</div>
+<div class="stat-subtitle" id="inv-kpi-7d-items">0 items</div>
+</div>
+<div class="glass-card stat-card">
+<div class="stat-title">Consumo (14 Días)</div>
+<div class="stat-value" id="inv-kpi-14d-costo">$ 0.00</div>
+<div class="stat-subtitle" id="inv-kpi-14d-items">0 items</div>
+</div>
+<div class="glass-card stat-card">
+<div class="stat-title">Consumo (30 Días Móviles)</div>
+<div class="stat-value" id="inv-kpi-30d-costo" style="color:var(--primary);">$ 0.00</div>
+<div class="stat-subtitle" id="inv-kpi-30d-items">0 items</div>
+</div>
+</div>
+<h3 style="margin-bottom:15px; color:#fbbf24;"><i data-lucide="alert-triangle"></i> Alertas de Stock Mínimo</h3>
+<div class="glass-card table-responsive" style="padding:0;">
+<table class="custom-table" style="width: 100%;">
+<thead><tr><th>Insumo</th><th>Cód. SAP</th><th>Stock Actual</th><th>Punto Pedido</th><th>Estado</th></tr></thead>
+<tbody id="tbody-inv-alertas"></tbody>
+</table>
+</div>
+</div>
+<!-- TAB: CATALOGO -->
+<div class="inv-tab-content" id="inv-catalogo" style="display:none;">
+<div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+<h3><i data-lucide="plus-circle"></i> Registrar Nuevo Insumo</h3>
+<form id="form-inv-insumo" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+<div class="form-group" style="flex: 2; min-width: 200px;">
+<label>Nombre del Insumo:</label>
+<input class="form-control" id="inv-ins-nombre" required="" type="text"/>
+</div>
+<div class="form-group" style="flex: 1; min-width: 120px;">
+<label>Cód. SAP:</label>
+<input class="form-control" id="inv-ins-sap" required="" type="text"/>
+</div>
+<div class="form-group" style="flex: 1; min-width: 100px;">
+<label>U. Medida:</label>
+<input class="form-control" id="inv-ins-unidad" placeholder="Ej. L, U, Kg" required="" type="text"/>
+</div>
+<div class="form-group" style="flex: 1; min-width: 120px;">
+<label>Costo ($/U):</label>
+<input class="form-control" id="inv-ins-costo" placeholder="Opcional" step="0.01" type="number"/>
+</div>
+<div class="form-group" style="flex: 1; min-width: 120px;">
+<label>Stock Min.:</label>
+<input class="form-control" id="inv-ins-min" placeholder="Opcional" step="0.01" type="number"/>
+</div>
+<button class="btn btn-primary" style="height: 42px;" type="submit"><i data-lucide="save"></i> Guardar</button>
+</form>
+</div>
+<div class="glass-card table-responsive" style="padding: 0;">
+<table class="custom-table" style="width: 100%;">
+<thead><tr><th>SAP</th><th>Nombre</th><th>U.M.</th><th>Costo Unit.</th><th>Stock Actual</th><th>Min.</th><th>Valorizado</th><th>Acciones</th></tr></thead>
+<tbody id="tbody-inv-insumos"></tbody>
+</table>
+</div>
+</div>
+<!-- TAB: MOVIMIENTOS -->
+<div class="inv-tab-content" id="inv-movimientos" style="display:none;">
+<div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+<h3><i data-lucide="edit-3"></i> Registrar Movimiento</h3>
+<form id="form-inv-mov" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+<div class="form-group" style="flex: 1; min-width: 150px;">
+<label>Tipo de Movimiento:</label>
+<select class="form-control" id="inv-mov-tipo" required="">
+<option value="CONSUMO">Salida (Consumo)</option>
+<option value="INGRESO">Ingreso (Stock)</option>
+<option value="AJUSTE">Ajuste Manual</option>
+</select>
+</div>
+<div class="form-group" style="flex: 2; min-width: 200px;">
+<label>Insumo:</label>
+<select class="form-control" id="inv-mov-insumo" required=""></select>
+</div>
+<div class="form-group" style="flex: 1; min-width: 120px;">
+<label>Cantidad:</label>
+<input class="form-control" id="inv-mov-cant" required="" step="0.01" type="number"/>
+</div>
+<div class="form-group" style="flex: 2; min-width: 200px;">
+<label>Motivo / Observación:</label>
+<input class="form-control" id="inv-mov-obs" type="text"/>
+</div>
+<button class="btn btn-primary" style="height: 42px;" type="submit"><i data-lucide="save"></i> Registrar</button>
+</form>
+</div>
+<div class="glass-card table-responsive" style="padding: 0;">
+<table class="custom-table" style="width: 100%;">
+<thead><tr><th>Fecha / Hora</th><th>Insumo</th><th>Tipo</th><th>Cant.</th><th>Costo Mov.</th><th>Usuario</th><th>Observación</th></tr></thead>
+<tbody id="tbody-inv-movs"></tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- SECCIÓN: GESTIÓN DE TIEMPOS -->
+
+</main>
+</div><div class="app-container tab-branch hidden" id="console-personal">
+<!-- SIDEBAR GESTIÓN -->
+<aside class="sidebar">
+<div class="sidebar-logo">
+<img alt="JR-LABS Logo" src="logo_icon.png" style="width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; margin-right: 12px; border-radius: 4px;"/>
+<div class="logo-text-container">
+<span class="logo-title">JR-LABS</span>
+<span class="logo-subtitle">Personal</span>
+</div>
+</div>
+<nav style="flex-grow: 1;">
+<ul class="sidebar-menu">
+
+
+
+
+
+<li>
+<button class="menu-item" data-target="view-objetivos">
+<i data-lucide="target"></i>
+              Objetivos 2026
+            </button>
+</li>
+<li>
+<button class="menu-item" data-target="view-charlas">
+<i data-lucide="mic"></i>
+              Generador Charlas IA
+            </button>
+</li>
+
+<li>
+<button class="menu-item" data-target="view-capacitaciones">
+<i data-lucide="graduation-cap"></i>
+              Capacitaciones
+            </button>
+</li>
+
+
+<li>
+<button class="menu-item" data-target="view-tiempos">
+<i data-lucide="clock"></i>
+              Gestión de Tiempos
+            </button>
+</li>
+</ul>
+</nav>
+<div class="sidebar-footer" style="display:flex; flex-direction:column; gap:8px;">
+<button class="btn btn-secondary btn-sm btn-back-hub" style="width: 100%;">
+<i data-lucide="home"></i>
+          Menú Inicial
+        </button>
+<button class="btn btn-secondary btn-sm btn-logout" style="width: 100%;">
+<i data-lucide="log-out"></i>
+          Cerrar Sesión
+        </button>
+<div class="system-status">
+<span class="status-indicator" style="background-color: var(--secondary); box-shadow: 0 0 10px var(--secondary);"></span>
+<span>Liderazgo</span>
+</div>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL GESTIÓN -->
+<main class="main-content">
+<!-- HEADER GLOBAL GESTIÓN -->
+<header class="main-header">
+<div class="header-info">
+<h1 id="personal-view-title">Disponibilidad de Equipos</h1>
+<p id="personal-view-subtitle">Monitoreo de KPIs, fallas operativas y mantenimiento de instrumentos</p>
+</div>
+<div class="header-actions">
+<span class="badge badge-info" id="time-badge-personal" style="font-family: monospace;">14/06/2026 12:00</span>
+</div>
+</header>
+<!-- TAB VIEW: DISPONIBILIDAD -->
+
+<!-- TAB VIEW: MUESTRAS INGRESADAS -->
+
+<!-- TAB VIEW: ESTÁNDARES & QC -->
+
+<!-- NEW TAB VIEW: CONFIGURACIÓN FLOTA (ANALISTA) -->
+
+<!-- NEW TAB VIEW: FALLAS FUNCIONALES EN MINA (ANALISTA) -->
+
+<!-- TAB VIEW: OBJETIVOS 2026 -->
+<section class="tab-view" id="view-objetivos">
+<div class="kpis-container" style="margin-bottom: 24px;">
+<div class="glass-card kpi-card purple" style="flex: 2;">
+<div><div class="kpi-label">Cumplimiento Global 2026</div><div class="kpi-value" id="obj-global-progress">0%</div></div>
+<div class="kpi-icon-container"><i data-lucide="target"></i></div>
+</div>
+<div class="glass-card kpi-card info">
+<div><div class="kpi-label">Objetivos Activos</div><div class="kpi-value" id="obj-active-count">0</div></div>
+<div class="kpi-icon-container"><i data-lucide="list-todo"></i></div>
+</div>
+</div>
+<div id="objetivos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+<!-- Objective Cards will be rendered here dynamically -->
+</div>
+</section>
+<!-- TAB VIEW: GENERADOR CHARLAS IA -->
+<section class="tab-view" id="view-charlas">
+<div style="display: flex; gap: 20px; flex-wrap: wrap;">
+<!-- CONFIGURACIÓN DE IA -->
+<div style="flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 20px;">
+<div class="glass-card" style="padding: 20px;">
+<h3 style="margin: 0 0 15px 0; font-family: var(--font-heading); color: var(--primary); display: flex; align-items: center; gap: 8px;">
+<i data-lucide="key" style="color: var(--primary);"></i> Configuración de API
+              </h3>
+<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Ingresa tu clave de Google Gemini (API Key) para habilitar el motor generativo. Se guarda localmente en tu navegador.</p>
+<div style="display: flex; gap: 10px;">
+<input class="form-control" id="gemini-api-key" placeholder="AIzaSy..." style="flex: 1;" type="password"/>
+<button class="btn btn-primary" id="btn-save-api-key">Guardar</button>
+</div>
+<span id="api-key-status" style="display: block; margin-top: 8px; font-size: 0.75rem; color: var(--success); display: none;"><i data-lucide="check-circle" style="width:12px; height:12px; vertical-align:middle;"></i> API Key Configurada</span>
+</div>
+<!-- FORMULARIO DE CHARLA -->
+<div class="glass-card" style="padding: 20px; border-top: 4px solid var(--purple);">
+<h3 style="margin: 0 0 15px 0; font-family: var(--font-heading); color: #fff; display: flex; align-items: center; gap: 8px;">
+<i data-lucide="mic"></i> Configurar Presentación
+              </h3>
+<form id="form-generar-charla" style="display: flex; flex-direction: column; gap: 16px;">
+<div class="form-group">
+<label for="charla-tema">Tema Principal:</label>
+<input class="form-control" id="charla-tema" placeholder="Ej: Control de derrames de aceite lubricante" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="charla-audiencia">Público Objetivo (Audiencia):</label>
+<input class="form-control" id="charla-audiencia" placeholder="Ej: Técnicos mecánicos junior" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="charla-duracion">Duración Estimada:</label>
+<select class="form-control" id="charla-duracion">
+<option value="5">Charla de 5 minutos</option>
+<option value="10">Charla de 10 minutos</option>
+<option value="15">Charla de 15 minutos</option>
+</select>
+</div>
+<div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 5px;">
+<label for="charla-plantilla">Formato / Diseño de Plantilla:</label>
+<select class="form-control" id="charla-plantilla">
+<option value="estandar">Formato Estándar (Colores JR-LABS)</option>
+<option value="neutro">Formato Externo (Neutro/Gris)</option>
+<option value="imagen_fondo">Subir Imagen de Fondo Personalizada</option>
+</select>
+</div>
+<div class="form-group" id="container-custom-bg" style="display: none;">
+<label for="charla-custom-bg">Subir Imagen de Fondo (PNG/JPG):</label>
+<input accept="image/png, image/jpeg" class="form-control" id="charla-custom-bg" style="padding: 6px;" type="file"/>
+<small style="color: var(--text-muted); font-size: 0.75rem;">Guarda tu plantilla PPTX como imagen y súbela aquí.</small>
+</div>
+<div class="form-group">
+<label for="charla-logo-tipo">Logotipo de la Presentación:</label>
+<select class="form-control" id="charla-logo-tipo">
+<option value="estandar">Usar Logo Estándar (JR-LABS)</option>
+<option value="personalizado">Subir Logo Externo</option>
+</select>
+</div>
+<div class="form-group" id="container-custom-logo" style="display: none;">
+<label for="charla-custom-logo">Subir Archivo de Logo (PNG sin fondo):</label>
+<input accept="image/png, image/jpeg" class="form-control" id="charla-custom-logo" style="padding: 6px;" type="file"/>
+<small style="color: var(--text-muted); font-size: 0.75rem;">Se incrustará en el formato seleccionado.</small>
+</div>
+<button class="btn btn-primary" id="btn-generar-charla" style="padding: 12px; font-size: 1rem; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 8px;" type="submit">
+<i data-lucide="zap"></i> Generar Contenido Mágico
+                </button>
+</form>
+</div>
+</div>
+<!-- RESULTADOS -->
+<div style="flex: 2; min-width: 400px; display: flex; flex-direction: column; gap: 20px;">
+<div class="glass-card" style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+<h3 style="margin: 0; font-family: var(--font-heading); color: #fff;"><i data-lucide="file-text"></i> Resultados de la IA</h3>
+<button class="btn btn-success" id="btn-descargar-pptx" style="display: none;"><i data-lucide="download"></i> Descargar PowerPoint (.pptx)</button>
+</div>
+<!-- Loader -->
+<div id="charla-loader" style="display: none; text-align: center; padding: 40px 0;">
+<div class="spinner" style="width: 40px; height: 40px; border: 4px solid rgba(139, 92, 246, 0.2); border-top: 4px solid var(--purple); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto;"></div>
+<p style="color: var(--purple); font-weight: bold; margin: 0;">La IA está escribiendo el guion y creando las diapositivas...</p>
+<p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 5px;">Esto puede tardar unos 10-15 segundos.</p>
+</div>
+<!-- Empty State -->
+<div id="charla-empty" style="text-align: center; padding: 60px 0; color: var(--text-muted);">
+<i data-lucide="presentation" style="width: 64px; height: 64px; opacity: 0.2; margin-bottom: 15px;"></i>
+<p>Completa el formulario y presiona Generar.</p>
+</div>
+<!-- Output Container -->
+<div id="charla-output" style="display: none; overflow-y: auto; max-height: 600px; padding-right: 10px;">
+<h4 style="color: var(--info); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Guion para el Expositor</h4>
+<div id="charla-script-content" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border-left: 3px solid var(--info); font-size: 0.95rem; line-height: 1.6; color: #fff; margin-bottom: 25px; white-space: pre-wrap;"></div>
+<h4 style="color: var(--warning); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Preguntas Frecuentes (FAQ)</h4>
+<div id="charla-faq-content" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border-left: 3px solid var(--warning); font-size: 0.9rem; line-height: 1.5; color: #ddd; white-space: pre-wrap;"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECCIÓN: EQUIPOS ETIQUETADOS -->
+
+<!-- SECCIÓN: CAPACITACIONES -->
+<section class="tab-view" id="view-capacitaciones">
+<div class="capacitaciones-tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; flex-wrap:wrap;">
+<button class="btn btn-secondary cap-tab-btn active" data-captab="cap-creadas">Catálogo de Temas (Creadas)</button>
+<button class="btn btn-secondary cap-tab-btn" data-captab="cap-recibidas">Capacitaciones Recibidas</button>
+<button class="btn btn-secondary cap-tab-btn" data-captab="cap-impartidas">Capacitaciones Impartidas</button>
+<button class="btn btn-secondary cap-tab-btn" data-captab="cap-buscador" style="margin-left: auto; background-color: var(--primary); color: white;"><i data-lucide="search"></i> Buscador de Historial</button>
+</div>
+<!-- TAB: CREADAS -->
+<div class="cap-tab-content" id="cap-creadas" style="display:block;">
+<div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+<h3><i data-lucide="plus-circle"></i> Nueva Capacitación (Catálogo Máster)</h3>
+<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Registra los temas que se utilizarán en las otras pestañas.</p>
+<form id="form-cap-creada" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+<div class="form-group" style="flex: 1; min-width: 250px;">
+<label>Tema / Título:</label>
+<input class="form-control" id="cap-creada-tema" required="" type="text"/>
+</div>
+<div class="form-group" style="flex: 1; min-width: 200px;">
+<label>Categoría:</label>
+<select class="form-control" id="cap-creada-cat" required="">
+<option value="100 - Seguridad">100 - Seguridad</option>
+<option value="101 - Medio Ambiente">101 - Medio Ambiente</option>
+<option value="102 - Técnica">102 - Técnica</option>
+<option value="103 - General">103 - General</option>
+</select>
+</div>
+<div class="form-group" style="flex: 1; min-width: 150px;">
+<label>Código Interno:</label>
+<input class="form-control" id="cap-creada-codigo" required="" type="text"/>
+</div>
+<button class="btn btn-primary" style="height: 42px;" type="submit"><i data-lucide="save"></i> Guardar</button>
+</form>
+</div>
+<div class="glass-card table-responsive" style="padding: 0;">
+<table class="custom-table" style="min-width: 100%;">
+<thead><tr><th>Código</th><th>Categoría</th><th>Tema</th><th>Acciones</th></tr></thead>
+<tbody id="tbody-cap-creadas"></tbody>
+</table>
+</div>
+</div>
+<!-- TAB: RECIBIDAS -->
+<div class="cap-tab-content" id="cap-recibidas" style="display:none;">
+<div id="dashboard-cap-recibidas" style="margin-bottom:20px;"></div>
+<div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+<h3><i data-lucide="download"></i> Registrar Capacitación Recibida</h3>
+<form id="form-cap-recibida" style="display: flex; flex-direction: column; gap: 15px;">
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:1; min-width:200px;"><label>Nombre Completo:</label><input class="form-control" id="cap-rec-nombre" required="" type="text"/></div>
+<div class="form-group" style="flex:1; min-width:150px;"><label>Legajo:</label><input class="form-control" id="cap-rec-legajo" required="" type="text"/></div>
+<div class="form-group" style="flex:1; min-width:200px;"><label>Área:</label><input class="form-control" id="cap-rec-area" required="" type="text"/></div>
+</div>
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:1; min-width:150px;"><label>Fecha:</label><input class="form-control" id="cap-rec-fecha" required="" type="date"/></div>
+<div class="form-group" style="flex:1; min-width:200px;"><label>Impartida por:</label><input class="form-control" id="cap-rec-impartida" required="" type="text"/></div>
+<div class="form-group" style="flex:1; min-width:250px;">
+<label>Tema del Curso:</label>
+<input class="form-control" id="cap-rec-tema" list="cap-rec-tema-list" placeholder="Escribe o selecciona un tema..." required="" type="text"/>
+<datalist id="cap-rec-tema-list"></datalist>
+</div>
+</div>
+<div class="form-group">
+<label>Evidencia Fotográfica (Diploma/Registro):</label>
+<input accept="image/png, image/jpeg" class="form-control" id="cap-rec-foto" required="" style="padding: 6px;" type="file"/>
+</div>
+<button class="btn btn-primary" type="submit"><i data-lucide="save"></i> Registrar Recibida</button>
+</form>
+</div>
+<div class="glass-card table-responsive" style="padding: 0;">
+<table class="custom-table" style="min-width: 100%;">
+<thead><tr><th>Fecha</th><th>Nombre</th><th>Legajo</th><th>Área</th><th>Tema</th><th>Impartida Por</th><th>Foto</th><th>Acciones</th></tr></thead>
+<tbody id="tbody-cap-recibidas"></tbody>
+</table>
+</div>
+</div>
+<!-- TAB: IMPARTIDAS -->
+<div class="cap-tab-content" id="cap-impartidas" style="display:none;">
+<div id="dashboard-cap-impartidas" style="display:flex; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+<!-- Contadores dinámicos -->
+</div>
+<div style="display:flex; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+<div class="glass-card" style="flex:1; min-width:300px; padding:20px;">
+<h4 style="margin-bottom:10px; text-align:center;">Personas por Categoría</h4>
+<div id="chart-cap-personas" style="min-height: 250px; display:flex; justify-content:center;"></div>
+</div>
+<div class="glass-card" style="flex:1; min-width:300px; padding:20px;">
+<h4 style="margin-bottom:10px; text-align:center;">Capacitaciones por Categoría</h4>
+<div id="chart-cap-cursos" style="min-height: 250px; display:flex; justify-content:center;"></div>
+</div>
+</div>
+<div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+<h3><i data-lucide="upload"></i> Registrar Capacitación Impartida</h3>
+<form id="form-cap-impartida" style="display: flex; flex-direction: column; gap: 15px;">
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:1; min-width:250px;">
+<label>Tema (Autocompleta Categoría):</label>
+<select class="form-control" id="cap-imp-tema" required=""><option value="">-- Selecciona del catálogo --</option></select>
+</div>
+<div class="form-group" style="flex:1; min-width:200px;"><label>Categoría Asignada:</label><input class="form-control" disabled="" id="cap-imp-cat" type="text"/></div>
+<div class="form-group" style="flex:1; min-width:150px;"><label>Fecha:</label><input class="form-control" id="cap-imp-fecha" required="" type="date"/></div>
+</div>
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:1; min-width:200px;"><label>Impartida por (Instructor):</label><input class="form-control" id="cap-imp-impartida" required="" type="text"/></div>
+<div class="form-group" style="flex:1; min-width:200px;">
+<label>Cantidad de Asistentes:</label>
+<input class="form-control" id="cap-imp-cantidad" min="1" required="" type="number"/>
+</div>
+<div class="form-group" style="flex:1; min-width:250px;">
+<label>Acta de Capacitación (Foto):</label>
+<input accept="image/png, image/jpeg" class="form-control" id="cap-imp-foto" required="" style="padding: 6px;" type="file"/>
+</div>
+</div>
+<div id="contenedor-asistentes" style="display:flex; flex-direction:column; gap:10px; margin-top:10px; border-left: 3px solid var(--primary); padding-left:15px;">
+<!-- Bloques dinámicos de asistentes -->
+</div>
+<button class="btn btn-primary" style="margin-top:10px;" type="submit"><i data-lucide="save"></i> Registrar Acta Impartida</button>
+</form>
+</div>
+<div class="glass-card table-responsive" style="padding: 0;">
+<table class="custom-table" style="min-width: 100%;">
+<thead><tr><th>Fecha</th><th>Tema</th><th>Categoría</th><th>Instructor</th><th>Asistentes</th><th>Acta</th><th>Acciones</th></tr></thead>
+<tbody id="tbody-cap-impartidas"></tbody>
+</table>
+</div>
+</div>
+<!-- TAB: BUSCADOR DE HISTORIAL -->
+<div class="cap-tab-content" id="cap-buscador" style="display:none;">
+<div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+<h3><i data-lucide="search"></i> Historial por Persona</h3>
+<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Escribe el nombre o apellido de una persona para ver todas las capacitaciones en las que ha participado.</p>
+<div style="display:flex; gap:15px; align-items:flex-end; max-width:600px;">
+<div class="form-group" style="flex:1;">
+<label>Nombre o Apellido:</label>
+<input class="form-control" id="cap-buscador-input" placeholder="Ej. Juan Perez..." type="text"/>
+</div>
+</div>
+</div>
+<div class="glass-card table-responsive" style="padding: 0;">
+<table class="custom-table" style="min-width: 100%;">
+<thead><tr><th>Persona</th><th>Legajo</th><th>Área</th><th>Tema del Curso</th><th>Categoría</th><th>Fecha</th><th>Instructor</th></tr></thead>
+<tbody id="tbody-cap-buscador">
+<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Usa el buscador de arriba para encontrar el historial de asistencias.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- SECCIÓN: HISTORIAL DE MUESTRAS (BIG DATA) -->
+
+<!-- SECCIÓN: INVENTARIO Y COSTOS -->
+
+<!-- SECCIÓN: GESTIÓN DE TIEMPOS -->
+<section class="tab-view" id="view-tiempos">
+<div class="tiempos-tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; flex-wrap:wrap;">
+<button class="btn btn-secondary tmp-tab-btn active" data-tmptab="tmp-dashboard"><i data-lucide="pie-chart"></i> Panel de Control</button>
+<button class="btn btn-secondary tmp-tab-btn" data-tmptab="tmp-categorias"><i data-lucide="list"></i> Configuración de Categorías</button>
+<button class="btn btn-secondary tmp-tab-btn" data-tmptab="tmp-actividades"><i data-lucide="plus-square"></i> Ingreso de Actividades</button>
+</div>
+<!-- TAB: DASHBOARD -->
+<div class="tmp-tab-content" id="tmp-dashboard" style="display:block;">
+<div style="display:flex; gap:15px; flex-wrap:wrap; align-items:flex-start;">
+<div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap; align-items:center; background: rgba(255,255,255,0.05); padding:15px; border-radius:8px;">
+<label style="color:#fff; font-weight:bold;">Filtro Temporal:</label>
+<select class="form-control" id="tmp-filtro-tipo" style="max-width: 150px;">
+<option value="dia">Día Específico</option>
+<option value="mes">Mes Específico</option>
+<option value="ano">Año Específico</option>
+</select>
+<input class="form-control" id="tmp-filtro-dia" style="max-width: 150px;" type="date"/>
+<input class="form-control" id="tmp-filtro-mes" style="max-width: 150px; display:none;" type="month"/>
+<input class="form-control" id="tmp-filtro-ano" max="2100" min="2000" style="max-width: 100px; display:none;" type="number" value="2026"/>
+<button class="btn btn-primary btn-sm" id="btn-tmp-actualizar"><i data-lucide="refresh-cw"></i> Actualizar</button>
+</div>
+<div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap; align-items:center; background: rgba(255,255,255,0.05); padding:15px; border-radius:8px; border: 1px solid rgba(251,191,36,0.4);">
+<label style="color:#fbbf24; font-weight:bold;" title="Tus días de franco se resaltarán en el gráfico"><i data-lucide="calendar-check"></i> Campaña (14x14):</label>
+<div style="display:flex; align-items:center; gap:5px;">
+<label style="font-size:0.8rem; color:#cbd5e1;">Inicio:</label>
+<input class="form-control" id="tmp-campana-inicio" style="max-width: 140px; padding:4px;" type="date"/>
+</div>
+<div style="display:flex; align-items:center; gap:5px;">
+<label style="font-size:0.8rem; color:#cbd5e1;">Fin:</label>
+<input class="form-control" id="tmp-campana-fin" style="max-width: 140px; padding:4px;" type="date"/>
+</div>
+<button class="btn btn-secondary btn-sm" id="btn-tmp-campana-guardar"><i data-lucide="save"></i> Guardar</button>
+</div>
+</div>
+<div style="display:flex; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+<div class="glass-card" style="flex:1; min-width:300px; padding:20px; background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border-radius: 12px;">
+<h4 style="margin-bottom:10px; text-align:center; color:#f8fafc; font-weight:bold;">Distribución de Tiempo (Drill-down)</h4>
+<p style="font-size:0.75rem; color:#94a3b8; text-align:center; margin-bottom:20px;">Haz clic en una porción para profundizar (Subcategorías). Botón derecho para volver atrás.</p>
+<div id="chart-tmp-drilldown" style="min-height: 350px; display:flex; justify-content:center;"></div>
+</div>
+<div class="glass-card" style="flex:1; min-width:300px; padding:20px; background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border-radius: 12px;">
+<h4 style="margin-bottom:20px; text-align:center; color:#f8fafc; font-weight:bold;">Macro-grupos (Global)</h4>
+<div id="chart-tmp-macrogrupos" style="min-height: 350px; display:flex; justify-content:center;"></div>
+</div>
+</div>
+<h3 style="margin-bottom:15px;"><i data-lucide="activity"></i> Impacto en Flujo de Trabajo</h3>
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:20px;">
+<div class="glass-card stat-card" style="border-left: 4px solid var(--warning);">
+<div class="stat-title">Demoras</div>
+<div class="stat-value" id="tmp-kpi-demora">0 hrs</div>
+<div class="stat-subtitle" id="tmp-kpi-demora-count">0 eventos</div>
+</div>
+<div class="glass-card stat-card" style="border-left: 4px solid var(--danger);">
+<div class="stat-title">Suspensión de Tareas</div>
+<div class="stat-value" id="tmp-kpi-suspension">0 hrs</div>
+<div class="stat-subtitle" id="tmp-kpi-suspension-count">0 eventos</div>
+</div>
+<div class="glass-card stat-card" style="border-left: 4px solid var(--primary);">
+<div class="stat-title">Superposición</div>
+<div class="stat-value" id="tmp-kpi-superposicion">0 hrs</div>
+<div class="stat-subtitle" id="tmp-kpi-superposicion-count">0 eventos</div>
+</div>
+</div>
+<h3 style="margin-bottom:15px;"><i data-lucide="calendar"></i> Organigrama de Actividades (Gantt)</h3>
+<div class="glass-card" style="padding: 20px; background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border-radius: 12px;">
+<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Fusión cronológica de análisis de laboratorio automáticos y cargas manuales.</p>
+<div id="chart-tmp-gantt" style="min-height: 400px;"></div>
+<div style="margin-top:20px; display:flex; flex-wrap:wrap; justify-content:center; gap:15px; font-size:0.8rem; color:#94a3b8; border-top: 1px solid #334155; padding-top:15px;">
+<span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; border-radius:50%; background:#10b981;"></div> Productiva</span>
+<span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; border-radius:50%; background:#74ACDF;"></div> Salud</span>
+<span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; border-radius:50%; background:#3b82f6;"></div> Objetivos</span>
+<span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; border-radius:50%; background:#f59e0b;"></div> Mantenimiento</span>
+<span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; border-radius:50%; background:#8b5cf6;"></div> Asistencia</span>
+<span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; border-radius:50%; background:#ef4444;"></div> Colisión / Extra</span>
+</div>
+</div>
+</div>
+<!-- TAB: CATEGORIAS -->
+<div class="tmp-tab-content" id="tmp-categorias" style="display:none;">
+<div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+<h3><i data-lucide="folder-plus"></i> Añadir Rama Categórica</h3>
+<form id="form-tmp-cat" style="display: flex; flex-direction: column; gap: 15px;">
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:1; min-width:150px;"><label>Símbolo Categoría:</label><input class="form-control" id="tmp-cat-sim1" required="" type="text"/></div>
+<div class="form-group" style="flex:2; min-width:200px;"><label>Actividad (Categoría):</label><input class="form-control" id="tmp-cat-nom1" required="" type="text"/></div>
+<div class="form-group" style="flex:1; min-width:150px;"><label>Símbolo Subcat:</label><input class="form-control" id="tmp-cat-sim2" type="text"/></div>
+<div class="form-group" style="flex:2; min-width:200px;"><label>Nombre Subcat:</label><input class="form-control" id="tmp-cat-nom2" type="text"/></div>
+</div>
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:1; min-width:150px;"><label>Símbolo 3er Orden:</label><input class="form-control" id="tmp-cat-sim3" type="text"/></div>
+<div class="form-group" style="flex:2; min-width:200px;"><label>Nombre 3er Orden:</label><input class="form-control" id="tmp-cat-nom3" type="text"/></div>
+<div class="form-group" style="flex:2; min-width:200px;">
+<label>Macro-Grupo (Englobe):</label>
+<select class="form-control" id="tmp-cat-macro" required="">
+<option value="Productiva">Productiva</option>
+<option value="Salud">Salud</option>
+<option value="Capacitación">Capacitación</option>
+<option value="Asistencia">Asistencia</option>
+<option value="Mantenimiento">Mantenimiento</option>
+<option value="Objetivos">Objetivos</option>
+</select>
+</div>
+</div>
+<button class="btn btn-primary" type="submit"><i data-lucide="save"></i> Guardar Jerarquía</button>
+</form>
+</div>
+<div class="glass-card table-responsive" style="padding: 0;">
+<h4 style="margin: 15px;"><i data-lucide="list"></i> Lista de Categorías</h4>
+<table class="custom-table" style="width: 100%;">
+<thead>
+<tr>
+<th>Macro</th>
+<th>Simb. Cat</th>
+<th>Categoría</th>
+<th>Simb. Sub</th>
+<th>Subcategoría</th>
+<th>Simb. 3er</th>
+<th>Cat 3er Orden</th>
+<th data-no-sort="true">Acciones</th>
+</tr>
+</thead>
+<tbody id="tbody-tmp-categorias"></tbody>
+</table>
+</div>
+</div>
+<!-- TAB: ACTIVIDADES -->
+<div class="tmp-tab-content" id="tmp-actividades" style="display:none;">
+<div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+<h3><i data-lucide="edit"></i> Registro de Actividad</h3>
+<form id="form-tmp-act" style="display: flex; flex-direction: column; gap: 15px;">
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:1; min-width:150px;"><label>Fecha Inicio:</label><input class="form-control" id="tmp-act-f1" required="" type="date"/></div>
+<div class="form-group" style="flex:1; min-width:120px;"><label>Hora Inicio:</label><input class="form-control" id="tmp-act-h1" required="" type="time"/></div>
+<div class="form-group" style="flex:1; min-width:150px;"><label>Fecha Fin:</label><input class="form-control" id="tmp-act-f2" required="" type="date"/></div>
+<div class="form-group" style="flex:1; min-width:120px;"><label>Hora Fin:</label><input class="form-control" id="tmp-act-h2" required="" type="time"/></div>
+<div class="form-group" style="flex:1; min-width:120px;"><label>Duración (hs):</label><input class="form-control" disabled="" id="tmp-act-dur" placeholder="Automático" type="text"/></div>
+</div>
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:2; min-width:250px;"><label>Actividad / Descripción:</label><input class="form-control" id="tmp-act-desc" required="" type="text"/></div>
+<div class="form-group" style="flex:1; min-width:150px;"><label>Participantes:</label><input class="form-control" id="tmp-act-parts" required="" type="text"/></div>
+<div class="form-group" style="flex:1; min-width:150px;"><label>Área:</label><input class="form-control" id="tmp-act-area" required="" type="text"/></div>
+</div>
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+<div class="form-group" style="flex:2; min-width:250px;">
+<label>Jerarquía (Categoría):</label>
+<select class="form-control" id="tmp-act-jerarquia" required=""></select>
+</div>
+<div class="form-group" style="flex:1; min-width:200px;">
+<label>Impacto Operativo:</label>
+<select class="form-control" id="tmp-act-impacto" required="">
+<option value="Normal">Normal / Sin impacto</option>
+<option value="Demora">Causó Demora</option>
+<option value="Superposición">Superposición de Tareas</option>
+<option value="Suspensión">Suspensión de Tareas</option>
+</select>
+</div>
+</div>
+<div style="display:flex; gap:10px;">
+<button class="btn btn-primary" id="btn-submit-act" type="submit"><i data-lucide="plus"></i> <span id="lbl-submit-act">Registrar Actividad</span></button>
+<button class="btn btn-secondary" id="btn-cancel-act" style="display:none;" type="button"><i data-lucide="x"></i> Cancelar</button>
+</div>
+</form>
+</div>
+<div class="glass-card table-responsive" style="padding: 0;">
+<table class="custom-table" style="width: 100%;">
+<thead><tr><th>Inicio</th><th>Fin</th><th>Dur. (hs)</th><th>Actividad</th><th>Cat/Sub/3er</th><th>Participantes</th><th>Impacto</th><th>Acciones</th></tr></thead>
+<tbody id="tbody-tmp-actividades"></tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- CONSOLE 2: INSPECCIÓN (Menú de solo observación) -->
+<div class="app-container tab-branch hidden" id="console-inspeccion">
+<!-- SIDEBAR INSPECCIÓN -->
+<aside class="sidebar" style="border-right-color: rgba(139, 92, 246, 0.25);">
+<div class="sidebar-logo">
+<img alt="JR-LABS Logo" src="logo_icon.png" style="width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; margin-right: 12px; border-radius: 4px;"/>
+<div class="logo-text-container">
+<span class="logo-title" style="background: linear-gradient(135deg, #fff 30%, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">JR-LABS</span>
+<span class="logo-subtitle" style="color: #c084fc;">Inspección</span>
+</div>
+</div>
+<nav style="flex-grow: 1;">
+<ul class="sidebar-menu">
+<li>
+<button class="menu-item active" data-target="view-insp-estado">
+<i data-lucide="clock"></i>
+              Estado de Muestras
+            </button>
+</li>
+<li>
+<button class="menu-item" data-target="view-insp-kpis">
+<i data-lucide="bar-chart-3"></i>
+              KPIs del Laboratorio
+            </button>
+</li>
+</ul>
+</nav>
+<div class="sidebar-footer" style="display:flex; flex-direction:column; gap:8px;">
+<button class="btn btn-secondary btn-sm btn-back-hub" style="width: 100%;">
+<i data-lucide="home"></i>
+          Menú Inicial
+        </button>
+<button class="btn btn-secondary btn-sm btn-logout" style="width: 100%;">
+<i data-lucide="log-out"></i>
+          Cerrar Sesión
+        </button>
+<div class="system-status">
+<span class="status-indicator" style="background-color: var(--purple); box-shadow: 0 0 10px var(--purple-glow);"></span>
+<span>Modo Observador</span>
+</div>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL INSPECCIÓN -->
+<main class="main-content">
+<!-- HEADER GLOBAL INSPECCIÓN -->
+<header class="main-header">
+<div class="header-info">
+<h1 id="insp-view-title">Estado de Muestras</h1>
+<p id="insp-view-subtitle">Monitoreo de flujo y cronómetros de lotes en el laboratorio</p>
+</div>
+<div class="header-actions">
+<span class="badge badge-purple" id="time-badge-inspeccion" style="font-family: monospace;">14/06/2026 12:00</span>
+</div>
+</header>
+<!-- INSP VIEW: ESTADO -->
+<section class="tab-view active" id="view-insp-estado">
+<div class="dashboard-grid">
+<!-- Lotes de muestras activos en laboratorio -->
+<div class="glass-card col-12">
+<h3 style="font-family: var(--font-heading); font-size: 1.25rem; margin-bottom: 1.25rem; border-bottom:1px solid var(--panel-border); padding-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+<span>Lotes de Muestra Activos en el Laboratorio</span>
+<span class="badge badge-info" id="insp-active-samples-count">3 Activos</span>
+</h3>
+<div id="insp-active-samples-flow-container" style="display:flex; flex-direction:column; gap:24px;">
+<!-- Flujo interactivo por muestra cargado dinámicamente -->
+</div>
+</div>
+<!-- Lotes históricos completados -->
+<div class="glass-card col-12 table-card">
+<div class="table-header-row">
+<h2>Lotes de Muestra Históricos Procesados</h2>
+</div>
+<div class="table-wrapper">
+<table class="custom-table">
+<thead>
+<tr>
+<th>Lote ID</th>
+<th>Hora Ingreso</th>
+<th>Observaciones Registradas</th>
+<th>Datos Faltantes</th>
+<th>T. Espera</th>
+<th>T. Análisis</th>
+<th>T. Reporte</th>
+<th>T. Repeticiones</th>
+<th>T. Falla Resol.</th>
+<th>Tiempo Total</th>
+<th>T. Prom. Muestra</th>
+</tr>
+</thead>
+<tbody id="insp-completed-samples-table-body">
+<!-- Dinámico -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- INSP VIEW: KPIs -->
+<section class="tab-view" id="view-insp-kpis">
+<!-- Toggle Control - Componentes Mayores vs Todos -->
+<div class="glass-card col-12" style="padding: 1rem 1.5rem; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+<div>
+<h3 style="font-family: var(--font-heading); font-size:1.1rem; color: #fff;">Filtro de Visualización Operativa</h3>
+<p style="font-size:0.75rem; color:var(--text-muted);">Configure si desea visualizar el análisis sobre todos los componentes o solo los declarados como mayores en Flota.</p>
+</div>
+<div style="display:flex; background:rgba(0,0,0,0.3); padding:4px; border-radius:10px; border:1px solid var(--panel-border);">
+<button class="btn btn-sm btn-secondary active-toggle" id="btn-toggle-todos" style="padding: 6px 16px; font-size:0.8rem; border:none; border-radius:8px;">Todos los Componentes</button>
+<button class="btn btn-sm btn-secondary" id="btn-toggle-mayores" style="padding: 6px 16px; font-size:0.8rem; border:none; border-radius:8px;">Componentes Mayores</button>
+</div>
+</div>
+<!-- KPIs Cards -->
+<div class="kpis-container">
+<div class="glass-card kpi-card info">
+<div><div class="kpi-label">Disponibilidad Lab</div><div class="kpi-value" id="insp-kpi-disponibilidad">97.8%</div></div>
+<div class="kpi-icon-container"><i data-lucide="percent"></i></div>
+</div>
+<div class="glass-card kpi-card danger">
+<div><div class="kpi-label">Fallas Equipos</div><div class="kpi-value" id="insp-kpi-fallas">4</div></div>
+<div class="kpi-icon-container"><i data-lucide="alert-triangle"></i></div>
+</div>
+<div class="glass-card kpi-card warning">
+<div><div class="kpi-label">Repeticiones Muestras</div><div class="kpi-value" id="insp-kpi-repeticiones">2</div></div>
+<div class="kpi-icon-container"><i data-lucide="rotate-ccw"></i></div>
+</div>
+<div class="glass-card kpi-card purple">
+<div><div class="kpi-label">Análisis Promedio (3 Claves)</div><div class="kpi-value" id="insp-kpi-avg-analisis" style="font-size: 1.8rem; margin-top:10px;">35 min</div></div>
+<div class="kpi-icon-container"><i data-lucide="timer"></i></div>
+</div>
+</div>
+<!-- NUEVO KPI: TIEMPO PROMEDIO POR MUESTRA ANALIZADA CON GAUGE -->
+<div class="glass-card col-12" style="padding: 1.5rem; margin-bottom: 24px;">
+<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--panel-border); padding-bottom:15px; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+<div>
+<h3 style="margin:0; font-family:var(--font-heading); color:#fff; display:flex; align-items:center; gap:8px;">
+<i data-lucide="activity" style="color: var(--primary);"></i> Rendimiento Analítico: Tiempo por Muestra
+              </h3>
+<p style="margin:5px 0 0 0; font-size:0.8rem; color:var(--text-muted);">
+                Promedio de (Tiempo Análisis + Reporte) / Cantidad de Muestras del Lote. Evaluado para 1 analista.
+              </p>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+<select class="form-control" id="insp-kpi-time-filter" style="width: auto; min-width: 120px; cursor:pointer;">
+<option value="day">Día Específico</option>
+<option selected="" value="range">Rango de Fechas</option>
+<option value="month">Mes Específico</option>
+<option value="year">Año Específico</option>
+<option value="all">Histórico Completo</option>
+</select>
+<div id="insp-kpi-filter-inputs" style="display: flex; gap: 10px; align-items: center;">
+<!-- Inputs para Día y Rango -->
+<input class="form-control" id="insp-kpi-date-from" style="width: auto;" type="date"/>
+<span id="insp-kpi-date-to-sep" style="color: var(--text-muted); font-size: 0.9rem;">hasta</span>
+<input class="form-control" id="insp-kpi-date-to" style="width: auto;" type="date"/>
+<!-- Input para Mes -->
+<input class="form-control" id="insp-kpi-month" style="width: auto; display: none;" type="month"/>
+<!-- Input para Año -->
+<select class="form-control" id="insp-kpi-year" style="width: auto; display: none;">
+<option value="2027">2027</option>
+<option selected="" value="2026">2026</option>
+<option value="2025">2025</option>
+<option value="2024">2024</option>
+</select>
+</div>
+</div>
+</div>
+<div style="display:flex; flex-wrap:wrap; gap: 20px; align-items: center;">
+<div style="flex:1; min-width: 250px; text-align:center; padding: 20px; background: var(--panel-bg); border-radius: 12px; border: 1px solid var(--panel-border);">
+<div class="kpi-label" style="font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Tiempo Promedio por Muestra</div>
+<div class="kpi-value" id="insp-kpi-avg-muestra-val" style="font-size: 3.5rem; margin-top:10px; color: var(--primary); font-family: monospace;">-- min</div>
+</div>
+<div style="flex:2; min-width: 300px; min-height: 250px; position:relative; display:flex; flex-direction:column; align-items:center;">
+<div style="width: 80%; border-bottom: 1px solid rgba(255,255,255,0.15); text-align:center; padding-bottom: 12px; margin-bottom: -15px; margin-top: 10px; z-index: 2;">
+<div id="insp-kpi-avg-muestra-status" style="font-size: 1.15rem; font-weight:700; text-transform: uppercase; letter-spacing:1px; color:var(--text-muted); padding: 6px 18px; border-radius: 20px; display:inline-block; background: rgba(0,0,0,0.2);">Cargando...</div>
+</div>
+<div id="chart-insp-gauge-rendimiento" style="width: 100%; height: 260px;"></div>
+</div>
+</div>
+</div>
+<!-- NUEVO GRAFICO: TENDENCIA DE TIEMPO VS TIEMPO -->
+<div class="glass-card col-12" style="padding: 1.5rem; margin-bottom: 24px;">
+<h3 style="margin:0 0 5px 0; font-family:var(--font-heading); color:#fff; display:flex; align-items:center; gap:8px; font-size:1.1rem;">
+<i data-lucide="trending-down" style="color: var(--primary); width:20px;"></i> Evolución del Tiempo de Respuesta
+          </h3>
+<p style="margin:0 0 20px 0; font-size:0.85rem; color:var(--text-muted);">
+            Muestra cómo varía el tiempo promedio por muestra a lo largo del período seleccionado.
+          </p>
+<div id="chart-insp-trend-rendimiento" style="width: 100%; height: 320px;"></div>
+</div>
+<!-- Tarjetas de Estados / Severidades Clínicas (INTERACTIVAS) -->
+<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
+<!-- Card Crítico -->
+<div class="glass-card kpi-card danger" id="card-severity-critical" style="cursor:pointer; border-left-width: 4px; padding: 1.25rem 1.5rem; transition: var(--transition-smooth);">
+<div>
+<div class="kpi-label">Muestras en Estado Crítico</div>
+<div class="kpi-value" id="insp-severity-crit-count" style="font-size: 2rem;">2</div>
+<span style="font-size:0.75rem; color:#fca5a5; font-weight:600; display:block; margin-top:4px;">Haga clic para ver análisis críticos</span>
+</div>
+<div class="kpi-icon-container"><i data-lucide="shield-alert"></i></div>
+</div>
+<!-- Card Advertencia -->
+<div class="glass-card kpi-card warning" id="card-severity-warning" style="cursor:pointer; border-left-width: 4px; padding: 1.25rem 1.5rem; transition: var(--transition-smooth);">
+<div>
+<div class="kpi-label">Muestras en Advertencia</div>
+<div class="kpi-value" id="insp-severity-warn-count" style="font-size: 2rem;">3</div>
+<span style="font-size:0.75rem; color:#fde68a; font-weight:600; display:block; margin-top:4px;">Haga clic para ver advertencias</span>
+</div>
+<div class="kpi-icon-container"><i data-lucide="alert-circle"></i></div>
+</div>
+<!-- Card Normal -->
+<div class="glass-card kpi-card success" id="card-severity-normal" style="padding: 1.25rem 1.5rem;">
+<div>
+<div class="kpi-label">Muestras Normales</div>
+<div class="kpi-value" id="insp-severity-normal-count" style="font-size: 2rem;">5</div>
+<span style="font-size:0.75rem; color:#a7f3d0; font-weight:600; display:block; margin-top:4px;">Operando en rangos óptimos</span>
+</div>
+<div class="kpi-icon-container"><i data-lucide="shield-check"></i></div>
+</div>
+</div>
+<!-- Panel de Detalle de Severidad Desplegable (Drill-down Table) -->
+<div class="glass-card col-12 table-card hidden" id="drilldown-severity-container" style="margin-bottom: 24px; padding: 1.5rem; border-color: rgba(59, 130, 246, 0.15);">
+<div class="table-header-row" style="padding: 0 0 1rem 0;">
+<div>
+<h2 id="drilldown-title" style="font-family: var(--font-heading); font-size:1.2rem; color:#fff;">Detalle de Muestras en Estado Crítico</h2>
+<p style="font-size:0.75rem; color:var(--text-muted);">Mapeo de análisis desviados, componente y equipo de origen.</p>
+</div>
+<button class="btn btn-secondary btn-sm" id="btn-close-drilldown"><i data-lucide="x"></i> Cerrar</button>
+</div>
+<div class="table-wrapper">
+<table class="custom-table">
+<thead>
+<tr>
+<th>ID Muestra</th>
+<th>Equipo Minero</th>
+<th>Componente</th>
+<th>Análisis Desviados que Causan Estado</th>
+</tr>
+</thead>
+<tbody id="drilldown-table-body">
+<!-- Cargado dinámicamente -->
+</tbody>
+</table>
+</div>
+</div>
+<!-- Gráficos de Metas y Proyecciones -->
+<div class="dashboard-grid">
+<!-- Estimación Anual -->
+<div class="glass-card col-4" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+<div class="kpi-icon-container" style="background: rgba(16, 185, 129, 0.1); color: var(--success); width:64px; height:64px; border-radius:20px; font-size:1.5rem; margin-bottom:12px;">
+<i data-lucide="trending-up"></i>
+</div>
+<h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-muted); font-weight:600;">Estimación Anual de Muestras</h4>
+<div class="kpi-value" id="insp-kpi-proyeccion-anual" style="font-size: 3rem; margin-top:8px; color: var(--success);">1,825</div>
+<p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; line-height:1.4; max-width: 240px;">
+              Proyección lineal automática basada en la tasa de ingreso real acumulada.
+            </p>
+</div>
+<!-- Gráfico 1: % Reportes con Recomendación según criticidad -->
+<div class="glass-card col-4" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; min-height: 300px;">
+<h3 style="font-family: var(--font-heading); font-size: 0.95rem; text-align:center; color:#fff; width:100%; border-bottom:1px solid var(--panel-border); padding-bottom:8px; margin-bottom: 8px;">% Reportes con Recomendación según Criticidad</h3>
+<div id="chart-insp-recomendaciones" style="width: 100%; min-height: 180px; display:flex; justify-content:center; align-items:center;"></div>
+<p style="font-size: 0.75rem; color: var(--text-muted); text-align:center; line-height: 1.3;">Muestras con criticidad Crítica/Advertencia que cuentan con nota en Observaciones.</p>
+</div>
+<!-- Gráfico 3: % Alertas de Condición antes de Falla Funcional -->
+<div class="glass-card col-4" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; min-height: 300px;">
+<h3 style="font-family: var(--font-heading); font-size: 0.95rem; text-align:center; color:#fff; width:100%; border-bottom:1px solid var(--panel-border); padding-bottom:8px; margin-bottom: 8px;">Eficacia Predictiva: % Alertas Pre-Falla</h3>
+<div id="chart-insp-alertas-prefalla" style="width: 100%; min-height: 180px; display:flex; justify-content:center; align-items:center;"></div>
+<div style="text-align: center;">
+<span style="font-size: 0.75rem; color: var(--text-muted); display:block; line-height: 1.3;">Objetivo: ≥ 85% de alertas emitidas antes de falla funcional.</span>
+</div>
+</div>
+<!-- Gráfico 2: Cumplimiento Tiempo Objetivo (2 horas) + Desglose de Tiempos -->
+<div class="glass-card col-6" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; min-height: 320px;">
+<h3 style="font-family: var(--font-heading); font-size: 0.95rem; text-align:center; color:#fff; width:100%; border-bottom:1px solid var(--panel-border); padding-bottom:8px; margin-bottom: 8px;">Cumplimiento Tiempo Objetivo (≤ 2 Horas)</h3>
+<div id="chart-insp-cumplimiento-2h" style="width: 100%; min-height: 200px; display:flex; justify-content:center; align-items:center;"></div>
+<p style="font-size: 0.75rem; color: var(--text-muted); text-align:center;">Meta: ≥ 95% de muestras procesadas en menos de 120 minutos.</p>
+</div>
+<!-- Desglose de Tiempos (Barra apilada Espera, Cola, Análisis) -->
+<div class="glass-card col-6" style="display:flex; flex-direction:column; justify-content:space-between; min-height: 320px;">
+<h3 style="font-family: var(--font-heading); font-size: 0.95rem; color:#fff; border-bottom:1px solid var(--panel-border); padding-bottom:8px; margin-bottom: 8px;">Desglose Promedio de Tiempos Analíticos</h3>
+<div id="chart-insp-desglose-tiempos" style="width: 100%; min-height: 220px;"></div>
+<span style="font-size: 0.75rem; color: var(--text-muted); text-align:center; display:block;">Promedio de minutos en Espera, Cola y Análisis por muestra.</span>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- CONSOLE 3: ADMINISTRACIÓN DE USUARIOS (Módulo del Administrador) -->
+<div class="app-container tab-branch hidden" id="console-admin">
+<!-- SIDEBAR ADMIN -->
+<aside class="sidebar" style="border-right-color: rgba(16, 185, 129, 0.25);">
+<div class="sidebar-logo">
+<img alt="JR-LABS Logo" src="logo_icon.png" style="width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; margin-right: 12px; border-radius: 4px;"/>
+<div class="logo-text-container">
+<span class="logo-title" style="background: linear-gradient(135deg, #fff 30%, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">JR-LABS</span>
+<span class="logo-subtitle" style="color: #10b981;">Administrador</span>
+</div>
+</div>
+<nav style="flex-grow: 1;">
+<ul class="sidebar-menu">
+<li>
+<button class="menu-item active" data-target="view-admin-users">
+<i data-lucide="users"></i>
+              Gestión de Usuarios
+            </button>
+</li>
+</ul>
+</nav>
+<div class="sidebar-footer" style="display:flex; flex-direction:column; gap:8px;">
+<button class="btn btn-secondary btn-sm btn-back-hub" style="width: 100%;">
+<i data-lucide="home"></i>
+          Menú Inicial
+        </button>
+<button class="btn btn-secondary btn-sm btn-logout" style="width: 100%;">
+<i data-lucide="log-out"></i>
+          Cerrar Sesión
+        </button>
+<div class="system-status">
+<span class="status-indicator" style="background-color: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);"></span>
+<span>Modo Admin</span>
+</div>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL ADMIN -->
+<main class="main-content">
+<header class="main-header">
+<div class="header-info">
+<h1 id="admin-view-title">Gestión de Usuarios</h1>
+<p id="admin-view-subtitle">Registro de personal del laboratorio, control de claves y asignación de perfiles</p>
+</div>
+<div class="header-actions">
+<span class="badge badge-success" id="time-badge-admin" style="font-family: monospace;">14/06/2026 12:00</span>
+</div>
+</header>
+<!-- VIEW: GESTIÓN DE USUARIOS -->
+<section class="tab-view active" id="view-admin-users">
+<div class="dashboard-grid">
+<!-- Formulario de Crear Usuario -->
+<div class="glass-card col-4">
+<h3 class="form-title">Registrar Nuevo Usuario</h3>
+<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">
+              Cree cuentas de acceso y asigne el nivel de privilegios correspondiente.
+            </p>
+<form class="form-container" id="form-admin-add-user">
+<div class="form-group">
+<label for="admin-new-username">Nombre de Usuario:</label>
+<input class="form-control" id="admin-new-username" placeholder="Ej: m.gomez" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="admin-new-password">Contraseña:</label>
+<div style="display: flex; gap: 8px;">
+<input class="form-control" id="admin-new-password" placeholder="Contraseña de acceso" required="" style="flex-grow: 1;" type="text"/>
+<button class="btn btn-secondary btn-sm" id="btn-admin-gen-pass" style="padding: 0 12px; font-size: 0.8rem;" type="button">
+                    Generar
+                  </button>
+</div>
+</div>
+<div class="form-group">
+<label for="admin-new-role">Perfil / Rol de Usuario:</label>
+<select class="form-control" id="admin-new-role" required="">
+<option value="Visor">Visor (Solo Lotes e Informes)</option>
+<option value="Analista">Analista (Gestión y Operación)</option>
+<option value="Inspector">Inspector (Solo Lectura y KPIs)</option>
+<option value="Administrador">Administrador (Cuentas y Claves)</option>
+</select>
+</div>
+<button class="btn btn-success" style="margin-top: 8px; width: 100%;" type="submit">
+<i data-lucide="user-plus" style="width:14px; height:14px; margin-right:6px; vertical-align: middle;"></i> Registrar Cuenta
+              </button>
+</form>
+</div>
+<!-- Historial de Usuarios -->
+<div class="glass-card col-8 table-card">
+<div class="table-header-row">
+<h2>Usuarios del Sistema</h2>
+</div>
+<div class="table-wrapper" style="max-height: 400px; overflow-y: auto;">
+<table class="custom-table">
+<thead>
+<tr>
+<th>Usuario</th>
+<th>Contraseña</th>
+<th>Perfil / Rol</th>
+<th style="text-align: center; width: 100px;">Acción</th>
+</tr>
+</thead>
+<tbody id="admin-users-table-body">
+<!-- Dinámico -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- CONSOLE 4: VISOR RESTRINGIDO -->
+<div class="app-container tab-branch hidden" id="console-visor">
+<!-- SIDEBAR VISOR -->
+<aside class="sidebar" style="border-right-color: rgba(251, 191, 36, 0.25);">
+<div class="sidebar-logo">
+<img alt="JR-LABS Logo" src="logo_icon.png" style="width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; margin-right: 12px; border-radius: 4px;"/>
+<div class="logo-text-container">
+<span class="logo-title" style="background: linear-gradient(135deg, #fff 30%, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">JR-LABS</span>
+<span class="logo-subtitle" style="color: #fbbf24;">Visor</span>
+</div>
+</div>
+<nav style="flex-grow: 1;">
+<ul class="sidebar-menu">
+<li>
+<button class="menu-item active" data-target="view-visor-lotes">
+<i data-lucide="clock"></i>
+              Lotes en Laboratorio
+            </button>
+</li>
+<li>
+<button class="menu-item" data-target="view-visor-informes">
+<i data-lucide="file-text"></i>
+              Informes Analíticos
+            </button>
+</li>
+</ul>
+</nav>
+<div class="sidebar-footer" style="display:flex; flex-direction:column; gap:12px;">
+<button class="btn btn-secondary btn-sm btn-logout" style="width: 100%;">
+<i data-lucide="log-out"></i>
+          Cerrar Sesión
+        </button>
+<div class="system-status">
+<span class="status-indicator" style="background-color: #fbbf24; box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);"></span>
+<span>Modo Visor</span>
+</div>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL VISOR -->
+<main class="main-content">
+<header class="main-header">
+<div class="header-info">
+<h1 id="visor-view-title">Lotes en Laboratorio</h1>
+<p id="visor-view-subtitle">Monitoreo de flujo y cronómetros de lotes en el laboratorio</p>
+</div>
+<div class="header-actions">
+<span class="badge badge-warning" id="time-badge-visor" style="font-family: monospace;">14/06/2026 12:00</span>
+</div>
+</header>
+<!-- VIEW: VISOR LOTES -->
+<section class="tab-view active" id="view-visor-lotes">
+<div class="dashboard-grid">
+<div class="glass-card col-12">
+<h3 style="font-family: var(--font-heading); font-size: 1.25rem; margin-bottom: 1.25rem; border-bottom:1px solid var(--panel-border); padding-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+<span>Lotes de Muestra Activos en el Laboratorio</span>
+<span class="badge badge-info" id="visor-active-samples-count">0 Activos</span>
+</h3>
+<div id="visor-active-samples-flow-container" style="display:flex; flex-direction:column; gap:24px;">
+<!-- Flujo interactivo por muestra cargado dinámicamente -->
+</div>
+</div>
+<!-- Lotes históricos completados -->
+<div class="glass-card col-12 table-card">
+<div class="table-header-row">
+<h2>Historial de Lotes Procesados</h2>
+</div>
+<div class="table-wrapper">
+<table class="custom-table">
+<thead>
+<tr>
+<th>Lote ID</th>
+<th>Cant.</th>
+<th>Hora Ingreso</th>
+<th>Observaciones Registradas</th>
+<th>Datos Faltantes</th>
+<th>T. Espera</th>
+<th>T. Análisis</th>
+<th>T. Reporte</th>
+<th>T. Repeticiones</th>
+<th>T. Falla Resol.</th>
+<th>Tiempo Total</th>
+<th>T. Prom. Muestra</th>
+</tr>
+</thead>
+<tbody id="visor-completed-samples-table-body">
+<!-- Dinámico -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- VIEW: VISOR INFORMES ANALÍTICOS -->
+<section class="tab-view" id="view-visor-informes">
+<div class="dashboard-grid">
+<div class="glass-card col-12 table-card" style="padding: 1.5rem;">
+<div class="table-header-row" style="margin-bottom: 1rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
+<h2>Informes Analíticos de Laboratorio</h2>
+<div style="display: flex; gap: 8px;">
+<input class="form-control" id="filter-informes-search" placeholder="Buscar informe..." style="width: 220px; font-size: 0.8rem;" type="text"/>
+<button class="btn btn-secondary btn-sm" id="btn-filter-informes-reset">Limpiar</button>
+</div>
+</div>
+<p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.4;">
+              Acceda a las cartillas de resultados validadas del laboratorio. Estos reportes contienen las curvas de viscosidad, contenido de agua y análisis metalúrgico/óptico certificado de las muestras.
+            </p>
+<div class="table-wrapper">
+<table class="custom-table" id="table-informes">
+<thead>
+<tr>
+<th>Informe ID</th>
+<th>Muestra Lote</th>
+<th>Equipo / Componente</th>
+<th>Fecha Validación</th>
+<th>Analista</th>
+<th style="text-align: center;">Severidad</th>
+<th style="text-align: center; width: 120px;">Acción</th>
+</tr>
+</thead>
+<tbody id="visor-informes-table-body">
+<!-- Generado dinámicamente -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- MODAL: REGISTRAR NUEVA FALLA / DETENCIÓN (OPERATIVO) -->
+<div class="modal-overlay" id="modal-add-failure">
+<div class="modal-container">
+<div class="modal-header">
+<h3>Registrar Falla en Equipo</h3>
+<button class="modal-close-btn" data-close="modal-add-failure">×</button>
+</div>
+<form class="form-container" id="form-add-failure">
+<div class="form-group">
+<label for="fail-select-equip">Seleccionar Instrumento:</label>
+<select class="form-control" id="fail-select-equip" required=""></select>
+</div>
+<div class="form-group">
+<label for="fail-desc">Detalle / Síntoma de la Falla:</label>
+<input class="form-control" id="fail-desc" placeholder="Ej: Ruido en bomba, descalibración" required="" type="text"/>
+</div>
+<div class="form-control-row">
+<div class="form-group">
+<label for="fail-duration">Duración Reparación (Horas):</label>
+<input class="form-control" id="fail-duration" min="0.1" placeholder="Ej: 3.5" required="" step="0.1" type="number"/>
+</div>
+<div class="form-group">
+<label for="fail-date">Fecha Detención:</label>
+<input class="form-control" id="fail-date" required="" type="date"/>
+</div>
+</div>
+<div style="display:flex; justify-content:flex-end; gap:12px; margin-top:1rem;">
+<button class="btn btn-secondary" data-close="modal-add-failure" type="button">Cancelar</button>
+<button class="btn btn-danger" type="submit">Guardar y Recalcular KPIs</button>
+</div>
+</form>
+</div>
+</div>
+<!-- MODAL: INGRESAR NUEVO LOTE DE MUESTRAS (OPERATIVO) -->
+<div class="modal-overlay" id="modal-add-sample">
+<div class="modal-container" style="max-width: 850px; width: 95%; height: 85vh; display: flex; flex-direction: column;">
+<div class="modal-header">
+<h3>Ingreso de Lote de Muestras</h3>
+<div style="display: flex; align-items: center;">
+<button onclick="this.closest('.modal-container').classList.toggle('modal-fullscreen')" style="background:transparent; border:none; cursor:pointer; margin-right:12px; color:#64748b;" title="Maximizar/Restaurar" type="button">
+<svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+</button>
+<button class="modal-close-btn" data-close="modal-add-sample" type="button">×</button>
+</div>
+</div>
+<form class="form-container" id="form-add-sample" style="display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 1.5rem; gap: 16px; overflow-y: auto;">
+<!-- Grid de Datos Generales del Lote -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid var(--panel-border);">
+<div class="form-group">
+<label for="sample-batch-name">Código de Lote / ID:</label>
+<input class="form-control" id="sample-batch-name" placeholder="Ej: LOTE-1406" required="" style="font-size:0.8rem; height:28px;" type="text"/>
+</div>
+<div class="form-group">
+<label for="sample-equip-target">Seleccionar Equipo Minero:</label>
+<select class="form-control" id="sample-equip-target" required="" style="font-size:0.8rem; height:28px; padding: 2px 6px;"></select>
+</div>
+<div class="form-group">
+<label for="sample-operator">Analista Responsable:</label>
+<input class="form-control" id="sample-operator" placeholder="Nombre" required="" style="font-size:0.8rem; height:28px;" type="text"/>
+</div>
+<div class="form-group" style="grid-column: span 3;">
+<label for="sample-observations">Observaciones Generales:</label>
+<input class="form-control" id="sample-observations" placeholder="Ej: Envases sellados." style="font-size:0.8rem; height:28px;" type="text"/>
+</div>
+</div>
+<!-- Propagación Masiva (Valores para todas las muestras) -->
+<div style="background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.15); padding: 12px; border-radius: 8px;">
+<h4 style="font-size:0.8rem; color:#10b981; margin: 0 0 8px 0; font-family:var(--font-heading); font-weight:700;">Datos Rápidos (Se propagarán a todas las muestras)</h4>
+<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+<div class="form-group">
+<label style="font-size:0.7rem;">Horómetro:</label>
+<input class="form-control" id="bulk-horometro" placeholder="Ej: 12500" style="font-size:0.75rem; height:26px; padding: 2px 6px;" type="number"/>
+</div>
+<div class="form-group">
+<label style="font-size:0.7rem;" title="Horómetro último cambio de aceite">Hr. Cambio:</label>
+<input class="form-control" id="bulk-horometro-cambio" placeholder="Ej: 12000" style="font-size:0.75rem; height:26px; padding: 2px 6px;" type="number"/>
+</div>
+<div class="form-group">
+<label style="font-size:0.7rem;">Fecha Rec.:</label>
+<input class="form-control" id="bulk-fecha-rec" style="font-size:0.75rem; height:26px; padding: 2px 6px;" type="date"/>
+</div>
+<div class="form-group">
+<label style="font-size:0.7rem;">Tipo Muestra:</label>
+<select class="form-control" id="bulk-tipo-muestra" style="font-size:0.75rem; height:26px; padding: 2px 6px;">
+<option value="PM 500">PM 500</option>
+<option value="DINGO">DINGO</option>
+<option value="RUTINA">RUTINA</option>
+<option value="ESPECIAL">ESPECIAL</option>
+</select>
+</div>
+<div class="form-group">
+<label style="font-size:0.7rem;">Orden Trab.:</label>
+<input class="form-control" id="bulk-ot" placeholder="Ej: OT-889" style="font-size:0.75rem; height:26px; padding: 2px 6px;" type="text"/>
+</div>
+<div class="form-group">
+<label style="font-size:0.7rem;">Control Inicial:</label>
+<input class="form-control" id="bulk-control-inicial" placeholder="Ej: 20001" style="font-size:0.75rem; height:26px; padding: 2px 6px;" type="number"/>
+</div>
+<div class="form-group">
+<label style="font-size:0.7rem;">Cambio Lub.:</label>
+<select class="form-control" id="bulk-cambio-aceite" style="font-size:0.75rem; height:26px; padding: 2px 6px;">
+<option value="NO INDICADO">No Indicado</option>
+<option value="SI">SÍ</option>
+<option value="NO">NO</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Selección de Muestras / Componentes Preconfigurados -->
+<div>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+<h4 style="font-size:0.85rem; color:#fff; margin:0; font-family:var(--font-heading);">Seleccionar Componentes a Ensayar</h4>
+<button class="btn btn-secondary btn-sm" id="btn-modal-add-custom-sample" style="padding:2px 8px; font-size:0.75rem;" type="button">+ Muestra Personalizada</button>
+</div>
+<div id="modal-model-detected-alert" style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px; font-style:italic;">Modelo de equipo no seleccionado.</div>
+<div id="modal-preconfigured-checkboxes" style="display:flex; flex-wrap:wrap; gap:12px; background:rgba(0,0,0,0.15); padding:10px; border-radius:8px; border:1px solid var(--panel-border); min-height:40px;">
+<!-- Casillas dinámicas de muestras del modelo -->
+</div>
+</div>
+<!-- Planilla de Vista Previa y Orden de Muestras -->
+<div style="flex: 1; display:flex; flex-direction:column; min-height:180px;">
+<h4 style="font-size:0.85rem; color:#fff; margin-bottom:8px; font-family:var(--font-heading);">Planilla y Orden del Lote</h4>
+<div class="table-wrapper" style="flex:1; overflow-y:auto; border:1px solid var(--panel-border); border-radius:6px; background:rgba(0,0,0,0.1);">
+<table class="custom-table" style="font-size:0.75rem;">
+<thead>
+<tr>
+<th style="width:120px;">Nro Control</th>
+<th>Muestra / Componente</th>
+<th>Horómetro</th>
+<th>Hr. Cambio</th>
+<th>OT</th>
+<th>Cambio Lub.</th>
+<th>Tipo</th>
+<th style="width:80px; text-align:center;">Orden</th>
+<th style="width:50px; text-align:center;">Quitar</th>
+</tr>
+</thead>
+<tbody id="modal-batch-samples-body">
+<!-- Se llena dinámicamente con las muestras seleccionadas/agregadas -->
+</tbody>
+</table>
+</div>
+</div>
+<!-- Footer -->
+<div style="display:flex; justify-content:flex-end; gap:12px; margin-top:8px; border-top:1px solid var(--panel-border); padding-top:12px;">
+<button class="btn btn-secondary" data-close="modal-add-sample" type="button">Cancelar</button>
+<button class="btn btn-primary" id="btn-submit-batch" type="submit">Iniciar Flujo y Cronómetros</button>
+</div>
+</form>
+</div>
+</div>
+<!-- MODAL: CARGAR RESULTADOS Y ANÁLISIS DE TENDENCIA (OPERATIVO) -->
+<div class="modal-overlay" id="modal-input-results">
+<div class="modal-container" style="max-width: 950px; width: 95%; height: 85vh; display: flex; flex-direction: column;">
+<div class="modal-header">
+<div style="display: flex; align-items: center; gap: 10px;">
+<div class="kpi-icon-container" style="background: rgba(59, 130, 246, 0.1); color: var(--primary); width: 36px; height: 36px; border-radius: 10px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;">
+<i data-lucide="flask"></i>
+</div>
+<div>
+<h3 style="margin: 0; font-family: var(--font-heading); font-size: 1.25rem; color: #fff;">Cargar Resultados del Análisis</h3>
+<span id="results-modal-subtitle" style="font-size: 0.75rem; color: var(--text-muted);">Muestra: - | Equipo: -</span>
+</div>
+</div>
+<div style="display: flex; align-items: center;">
+<button onclick="this.closest('.modal-container').classList.toggle('modal-fullscreen')" style="background:transparent; border:none; cursor:pointer; margin-right:12px; color:#64748b;" title="Maximizar/Restaurar" type="button">
+<svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+</button>
+<button class="modal-close-btn" data-close="modal-input-results" type="button">×</button>
+</div>
+</div>
+<form class="form-container" id="form-input-results" style="display: flex; flex: 1; min-height: 0; padding: 0; overflow: hidden; margin: 0;">
+<!-- Panel Izquierdo: Carga de Ensayos Actuales -->
+<div style="width: 50%; border-right: 1px solid var(--panel-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 16px; overflow-y: auto;">
+<h4 style="font-family: var(--font-heading); font-size: 0.95rem; margin: 0; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px;">Ensayos Físico-Químicos Actuales</h4>
+<div id="results-parameters-inputs-container" style="display: flex; flex-direction: column; gap: 16px;">
+<!-- Dinámico por JavaScript -->
+</div>
+</div>
+<!-- Panel Derecho: Historial y Análisis de Tendencia -->
+<div style="width: 50%; padding: 1.5rem; display: flex; flex-direction: column; gap: 16px; overflow-y: auto;">
+<h4 style="font-family: var(--font-heading); font-size: 0.95rem; margin: 0; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px;">Historial de Tendencia (Últimas Muestras)</h4>
+<div id="results-historical-inputs-container" style="display: flex; flex-direction: column; gap: 12px;">
+<!-- Inputs dinámicos para historial de 3 muestras anteriores -->
+</div>
+<!-- Canvas para Gráfico de Tendencia -->
+<div style="background: rgba(0,0,0,0.2); border: 1px solid var(--panel-border); border-radius: 8px; padding: 12px; flex-grow: 1; display: flex; flex-direction: column; min-height: 180px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+<span style="font-size: 0.75rem; font-weight: bold; color: #fff;">Visualización de Tendencia</span>
+<select class="form-control" id="select-trend-parameter" style="width:180px; font-size:0.75rem; height:24px; padding:2px 6px;"></select>
+</div>
+<div style="flex-grow: 1; position: relative; display: flex; align-items: center; justify-content: center;">
+<canvas id="canvas-trend-chart" style="width: 100%; height: 100%; max-height: 140px; display: block;"></canvas>
+</div>
+</div>
+</div>
+</form>
+<!-- Footer General del Modal -->
+<div style="padding: 1rem 1.5rem; border-top: 1px solid var(--panel-border); display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.15);">
+<!-- Diagnóstico / Recomendación -->
+<div class="form-group" style="margin: 0;">
+<label for="results-diagnostico" style="font-size:0.8rem; font-weight: 700; color:#fff; display: flex; justify-content: space-between;">
+<span>Diagnóstico Técnico y Recomendación:</span>
+<span class="badge badge-secondary" id="auto-severity-badge" style="font-size: 0.7rem;">Normal</span>
+</label>
+<textarea class="form-control" id="results-diagnostico" placeholder="Ej: Viscosidad estable. Agua baja. Condición normal." required="" style="height: 54px; font-size: 0.8rem; resize: none; margin-top: 4px;"></textarea>
+</div>
+<div style="display: flex; justify-content: flex-end; gap: 12px;">
+<button class="btn btn-secondary" data-close="modal-input-results" type="button">Cancelar</button>
+<button class="btn btn-primary" id="btn-save-analysis-defer" style="background: var(--purple); border-color: var(--purple);" type="button">Guardar y Diferir PDF</button>
+<button class="btn btn-success" id="btn-save-analysis-results" type="button">Guardar y PDF Inmediato</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL: CARGA MASIVA DE RESULTADOS (LOTE) -->
+<div class="modal-overlay" id="modal-batch-results">
+<div class="modal-container" style="max-width: 95vw; width: 1200px;">
+<div class="modal-header">
+<h3>Carga Masiva de Resultados de Lote</h3>
+<button class="modal-close-btn" data-close="modal-batch-results">×</button>
+</div>
+<div class="form-container" style="overflow-x: auto; max-height: 60vh; padding: 1rem;">
+<table class="custom-table" id="batch-results-table">
+<thead>
+<tr id="batch-results-head">
+</tr>
+</thead>
+<tbody id="batch-results-body">
+</tbody>
+</table>
+</div>
+<div style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--panel-border);">
+<button class="btn btn-secondary" data-close="modal-batch-results" type="button">Cancelar</button>
+<button class="btn btn-primary" id="btn-save-batch-defer" style="background: var(--purple); border-color: var(--purple);" type="button">Guardar Lote y Diferir PDF</button>
+<button class="btn btn-success" id="btn-save-batch-immediate" type="button">Guardar Lote y PDF Inmediato</button>
+</div>
+</div>
+</div>
+<!-- MODAL: REGISTRAR ENSAYO QC (OPERATIVO) -->
+<div class="modal-overlay" id="modal-add-qc-run">
+<div class="modal-container">
+<div class="modal-header">
+<h3>Registrar Ensayo QC Diario</h3>
+<button class="modal-close-btn" data-close="modal-add-qc-run">×</button>
+</div>
+<form class="form-container" id="form-add-qc-run">
+<div class="form-group">
+<label for="qc-run-date">Fecha / Hora del Ensayo:</label>
+<input class="form-control" id="qc-run-date" required="" type="datetime-local"/>
+</div>
+<div class="form-group">
+<label for="qc-run-value" id="qc-run-value-label">Valor Obtenido en Ensayo (cSt):</label>
+<input class="form-control" id="qc-run-value" min="0" placeholder="Ingresa el valor del análisis" required="" step="0.01" type="number"/>
+</div>
+<div style="display:flex; justify-content:flex-end; gap:12px; margin-top:1rem;">
+<button class="btn btn-secondary" data-close="modal-add-qc-run" type="button">Cancelar</button>
+<button class="btn btn-primary" type="submit">Guardar en Gráfico</button>
+</div>
+</form>
+</div>
+</div>
+<!-- MODAL: GESTIONAR ESTÁNDARES (OPERATIVO) -->
+<div class="modal-overlay" id="modal-create-standard">
+<div class="modal-container" style="max-width: 600px;">
+<div class="modal-header">
+<h3>Gestión de Aceites Patrón y QC</h3>
+<button class="modal-close-btn" data-close="modal-create-standard">×</button>
+</div>
+<div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 1.5rem;">
+<h4 style="font-family: var(--font-heading); font-size: 1rem; margin-bottom: 8px; color:#fff;">Añadir Nuevo Aceite Patrón Personalizado</h4>
+<form class="form-container" id="form-create-standard">
+<div class="form-group">
+<label for="std-name">Nombre del Aceite Patrón:</label>
+<input class="form-control" id="std-name" placeholder="Ej: Aceite Patrón Viscosidad Nom. 100 cSt" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="std-param">Parámetro Químico Evaluado:</label>
+<input class="form-control" id="std-param" placeholder="Ej: Viscosidad @ 40°C, Contenido de Agua, Hierro (Fe)" required="" type="text"/>
+</div>
+<div class="form-control-row">
+<div class="form-group">
+<label for="std-nominal">Valor Nominal (Medio):</label>
+<input class="form-control" id="std-nominal" placeholder="Ej: 100.0" required="" step="0.01" type="number"/>
+</div>
+<div class="form-group">
+<label for="std-sd">Desviación Estándar (SD):</label>
+<input class="form-control" id="std-sd" placeholder="Ej: 1.5" required="" step="0.01" type="number"/>
+</div>
+</div>
+<div class="form-control-row">
+<div class="form-group">
+<label for="std-unit">Unidad de Medida:</label>
+<input class="form-control" id="std-unit" placeholder="Ej: cSt, ppm, %" required="" type="text"/>
+</div>
+<div class="form-group" style="justify-content: flex-end;">
+<button class="btn btn-success" style="width: 100%;" type="submit">
+<i data-lucide="plus"></i> Registrar Estándar
+              </button>
+</div>
+</div>
+</form>
+</div>
+<div>
+<h4 style="font-family: var(--font-heading); font-size: 1rem; margin-bottom: 8px; color:#fff;">Estándares Activos</h4>
+<div class="table-wrapper" style="max-height: 150px; overflow-y: auto;">
+<table class="custom-table" style="font-size: 0.8rem;">
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Parámetro</th>
+<th>Nominal</th>
+<th>SD</th>
+<th>Acciones</th>
+</tr>
+</thead>
+<tbody id="active-standards-list-body"></tbody>
+</table>
+</div>
+</div>
+<div style="display:flex; justify-content:flex-end; gap:12px; margin-top:1.5rem; border-top:1px solid var(--border-color); padding-top:1rem;">
+<button class="btn btn-secondary" data-close="modal-create-standard" type="button">Cerrar Ventana</button>
+</div>
+</div>
+</div>
+<!-- MODAL: SOPORTE TÉCNICO E INSTRUMENTACIÓN (CONFIGURACIÓN DE LABORATORIO) -->
+<div class="modal-overlay" id="modal-equip-support">
+<div class="modal-container" style="max-width: 950px; width: 95%; height: 85vh; display: flex; flex-direction: column;">
+<div class="modal-header">
+<div style="display: flex; align-items: center; gap: 10px;">
+<div class="kpi-icon-container" style="background: rgba(0, 47, 108, 0.1); color: var(--primary); width: 36px; height: 36px; border-radius: 10px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;">
+<i data-lucide="wrench"></i>
+</div>
+<div>
+<h3 id="support-modal-title" style="margin: 0; font-family: var(--font-heading); font-size: 1.25rem; color: #fff;">Soporte Técnico del Instrumento</h3>
+<span id="support-modal-subtitle" style="font-size: 0.75rem; color: var(--text-muted);">Carga de manuales en PDF y asistente de resolución de fallas</span>
+</div>
+</div>
+<button class="modal-close-btn" data-close="modal-equip-support">×</button>
+</div>
+<!-- Split Pane Body -->
+<div style="display: flex; flex: 1; min-height: 0; border-top: 1px solid var(--panel-border);">
+<!-- Panel Izquierdo: Carga y Ficha Técnica -->
+<div style="width: 45%; border-right: 1px solid var(--panel-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 16px; overflow-y: auto;">
+<!-- Uploader Area -->
+<div class="glass-card" id="pdf-drag-drop-area" style="padding: 1.25rem; text-align: center; border-style: dashed; border-width: 2px; border-color: var(--primary); background: rgba(0, 47, 108, 0.02); cursor: pointer;">
+<i data-lucide="file-text" style="width: 36px; height: 36px; color: var(--primary); margin-bottom: 8px;"></i>
+<h4 style="margin: 0 0 4px 0; font-size: 0.9rem; color: #fff;">Cargar Manual de Usuario</h4>
+<p style="font-size: 0.7rem; color: var(--text-muted); margin: 0 0 12px 0;">Suba el archivo del manual en formato PDF</p>
+<button class="btn btn-primary btn-sm" id="btn-trigger-pdf-upload" style="margin: 0 auto; display: block;">Seleccionar Archivo</button>
+<input accept=".pdf" id="pdf-manual-input" style="display: none;" type="file"/>
+</div>
+<!-- Estado de Extracción -->
+<div class="hidden" id="pdf-status-container" style="background: rgba(0,0,0,0.2); border: 1px solid var(--panel-border); padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+<div class="status-indicator" id="pdf-status-dot" style="background-color: var(--warning);"></div>
+<div style="flex-grow: 1;">
+<div id="pdf-status-text" style="font-size: 0.75rem; font-weight: bold; color: #fff;">Procesando PDF...</div>
+<div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 4px; overflow: hidden;">
+<div id="pdf-progress-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.2s;"></div>
+</div>
+</div>
+</div>
+<!-- Ficha Técnica Extraída -->
+<div class="glass-card" style="padding: 1.25rem; flex-grow: 1; display: flex; flex-direction: column; gap: 12px;">
+<h4 style="font-family: var(--font-heading); font-size: 0.95rem; margin: 0; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+<span>Especificaciones Técnicas</span>
+<span class="badge badge-success" id="badge-manual-status" style="font-size: 0.65rem;">Manual Semilla</span>
+</h4>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 0.8rem;">
+<div>
+<span style="color: var(--text-muted); display: block; font-size: 0.7rem;">Instrumento:</span>
+<strong id="tech-spec-name" style="color: #fff;">-</strong>
+</div>
+<div>
+<span style="color: var(--text-muted); display: block; font-size: 0.7rem;">Código ID:</span>
+<strong id="tech-spec-id" style="color: #fff;">-</strong>
+</div>
+<div>
+<span style="color: var(--text-muted); display: block; font-size: 0.7rem;">Fabricante:</span>
+<strong id="tech-spec-manufacturer" style="color: #fff;">-</strong>
+</div>
+<div>
+<span style="color: var(--text-muted); display: block; font-size: 0.7rem;">Modelo:</span>
+<strong id="tech-spec-model" style="color: #fff;">-</strong>
+</div>
+<div>
+<span style="color: var(--text-muted); display: block; font-size: 0.7rem;">Calibración:</span>
+<strong id="tech-spec-calibration" style="color: #fff;">-</strong>
+</div>
+<div>
+<span style="color: var(--text-muted); display: block; font-size: 0.7rem;">Mantenimiento:</span>
+<strong id="tech-spec-maintenance" style="color: #fff;">-</strong>
+</div>
+<div style="grid-column: span 2;">
+<span style="color: var(--text-muted); display: block; font-size: 0.7rem;">Rango de Operación:</span>
+<strong id="tech-spec-range" style="color: #fff;">-</strong>
+</div>
+</div>
+<div style="margin-top: auto; padding-top: 10px; border-top: 1px solid var(--panel-border); text-align: center;">
+<button class="btn btn-secondary btn-sm" disabled="" id="btn-delete-manual" style="width: 100%;">
+<i data-lucide="trash-2" style="width:12px; height:12px; margin-right:4px;"></i> Eliminar Manual de Memoria
+              </button>
+</div>
+</div>
+</div>
+<!-- Panel Derecho: Chat Técnico -->
+<div style="width: 55%; padding: 1.5rem; display: flex; flex-direction: column; background: rgba(0, 0, 0, 0.15);">
+<!-- Chat Feed -->
+<div id="support-chat-feed" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-bottom: 12px; min-height: 0;">
+<!-- Burbujas de chat cargadas dinámicamente -->
+</div>
+<!-- Sugerencias de Preguntas -->
+<div id="chat-suggestions-container" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+<!-- Generado dinámicamente -->
+</div>
+<!-- Chat Input -->
+<form id="form-support-chat" style="display: flex; gap: 8px; align-items: center; border-top: 1px solid var(--panel-border); padding-top: 12px;">
+<input class="form-control" id="support-chat-input" placeholder="Escriba su consulta o describa el síntoma de falla..." required="" style="flex-grow: 1;" type="text"/>
+<button class="btn btn-primary" style="padding: 10px 18px;" type="submit">
+              Enviar <i data-lucide="send" style="width: 14px; height: 14px; margin-left: 6px; vertical-align: middle;"></i>
+</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL: AÑADIR NUEVO EQUIPO DESDE MANUAL PDF -->
+<div class="modal-overlay" id="modal-add-equip-pdf">
+<div class="modal-container" style="max-width: 600px; width: 90%; display: flex; flex-direction: column;">
+<div class="modal-header">
+<div style="display: flex; align-items: center; gap: 10px;">
+<div class="kpi-icon-container" style="background: rgba(16, 185, 129, 0.1); color: var(--success); width: 36px; height: 36px; border-radius: 10px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;">
+<i data-lucide="plus-circle"></i>
+</div>
+<div>
+<h3 style="margin: 0; font-family: var(--font-heading); font-size: 1.25rem; color: #fff;">Añadir Equipo desde PDF</h3>
+<span style="font-size: 0.75rem; color: var(--text-muted);">Cargue el manual en PDF para autocompletar la ficha técnica</span>
+</div>
+</div>
+<button class="modal-close-btn" data-close="modal-add-equip-pdf">×</button>
+</div>
+<div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 16px; border-top: 1px solid var(--panel-border); overflow-y: auto;">
+<!-- PDF Upload Area -->
+<div class="glass-card" id="create-pdf-drag-area" style="padding: 1.25rem; text-align: center; border-style: dashed; border-width: 2px; border-color: var(--success); background: rgba(16, 185, 129, 0.02); cursor: pointer;">
+<i data-lucide="file-text" style="width: 36px; height: 36px; color: var(--success); margin-bottom: 8px;"></i>
+<h4 style="margin: 0 0 4px 0; font-size: 0.9rem; color: #fff;">Subir Manual en PDF</h4>
+<p style="font-size: 0.7rem; color: var(--text-muted); margin: 0 0 12px 0;">Arrastre o haga clic para seleccionar el manual PDF</p>
+<button class="btn btn-success btn-sm" id="btn-trigger-create-pdf-upload" style="margin: 0 auto; display: block;" type="button">Seleccionar Archivo</button>
+<input accept=".pdf" id="create-pdf-manual-input" style="display: none;" type="file"/>
+</div>
+<!-- Progress Indicator -->
+<div class="hidden" id="create-pdf-status-container" style="background: rgba(0,0,0,0.2); border: 1px solid var(--panel-border); padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+<div class="status-indicator" id="create-pdf-status-dot" style="background-color: var(--warning);"></div>
+<div style="flex-grow: 1;">
+<div id="create-pdf-status-text" style="font-size: 0.75rem; font-weight: bold; color: #fff;">Procesando PDF...</div>
+<div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 4px; overflow: hidden;">
+<div id="create-pdf-progress-bar" style="width: 0%; height: 100%; background: var(--success); transition: width 0.2s;"></div>
+</div>
+</div>
+</div>
+<!-- Formulario Editable -->
+<form class="form-container" id="form-create-equip-pdf" style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+<div class="form-group">
+<label for="create-equip-name">Nombre del Instrumento:</label>
+<input class="form-control" id="create-equip-name" placeholder="Ej: Viscosímetro Kinemático" required="" type="text"/>
+</div>
+<div class="form-control-row">
+<div class="form-group">
+<label for="create-equip-manufacturer">Fabricante:</label>
+<input class="form-control" id="create-equip-manufacturer" placeholder="Ej: Cannon Instrument" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="create-equip-model">Modelo:</label>
+<input class="form-control" id="create-equip-model" placeholder="Ej: CAV 4.2" required="" type="text"/>
+</div>
+</div>
+<div class="form-control-row">
+<div class="form-group">
+<label for="create-equip-location">Ubicación / Área del Lab:</label>
+<select class="form-control" id="create-equip-location" required="">
+<option value="Área Fisicoquímica">Área Fisicoquímica</option>
+<option value="Área Espectrometría">Área Espectrometría</option>
+<option value="Área Infrarrojo">Área Infrarrojo</option>
+<option value="Área Contaminación">Área Contaminación</option>
+<option value="Área Técnica">Área Técnica</option>
+</select>
+</div>
+<div class="form-group">
+<label for="create-equip-range">Rango de Operación:</label>
+<input class="form-control" id="create-equip-range" placeholder="Ej: 0.5 cSt - 5000 cSt" required="" type="text"/>
+</div>
+</div>
+<div class="form-control-row">
+<div class="form-group">
+<label for="create-equip-calibration">Frecuencia Calibración:</label>
+<input class="form-control" id="create-equip-calibration" required="" type="text" value="Mensual"/>
+</div>
+<div class="form-group">
+<label for="create-equip-maintenance">Frecuencia Mantenimiento:</label>
+<input class="form-control" id="create-equip-maintenance" required="" type="text" value="Anual"/>
+</div>
+</div>
+<div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; border-top: 1px solid var(--panel-border); padding-top: 12px;">
+<button class="btn btn-secondary" data-close="modal-add-equip-pdf" type="button">Cancelar</button>
+<button class="btn btn-success" id="btn-save-created-equip" type="submit">
+<i data-lucide="plus-circle" style="width: 14px; height: 14px; margin-right: 6px; vertical-align: middle;"></i> Guardar Equipo
+            </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- Script del Controlador de la Aplicación -->
+  <script type="module" src="database.js?v=20260630"></script>
+<script src="global-tables.js"></script>
+<script src="app_v3.js?v=20260624_30" type="module"></script>
+<script src="inventario.js?v=20260627_2024"></script>
+<script src="tiempos.js?v=20260627_2115"></script>
+<!-- MODAL: GESTOR DE ESTÁNDARES QC -->
+<div class="modal-overlay" id="modal-gestor-qc" style="display: none;">
+<div class="modal-container" style="max-width: 800px;">
+<div class="modal-header">
+<h3 style="font-family: var(--font-heading);"><i data-lucide="settings"></i> Gestor de Estándares de Calidad (QC)</h3>
+<button class="btn btn-secondary btn-sm" id="btn-close-gestor-qc"><i data-lucide="x"></i></button>
+</div>
+<div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+<div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+<div class="form-group" style="flex: 1;">
+<label for="gestor-qc-equip">Seleccionar Instrumento</label>
+<select class="form-control" id="gestor-qc-equip">
+<option value="Spectro Visc">Spectro Visc</option>
+<option value="Contador de Partículas">Contador de Partículas</option>
+<option value="Karl Fischer">Karl Fischer</option>
+<option value="Espectrómetro ICP">Espectrómetro ICP</option>
+<option value="FTIR">Espectrómetro FTIR</option>
+</select>
+</div>
+<div class="form-group" style="flex: 1; display: flex; align-items: flex-end;">
+<button class="btn btn-primary" id="btn-add-qc-subcomponent" style="width: 100%;"><i data-lucide="plus"></i> Agregar Nuevo Canal/Capilar</button>
+</div>
+</div>
+<div id="qc-subcomponents-list" style="display: flex; flex-direction: column; gap: 1rem;">
+<!-- List of capillaries will be rendered here dynamically -->
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-secondary" id="btn-cancel-gestor-qc">Cerrar</button>
+<button class="btn btn-success" id="btn-save-gestor-qc">Guardar Configuración</button>
+</div>
+</div>
+</div>
+<!-- MODAL: GESTOR DE OBJETIVOS -->
+<div class="modal-overlay" id="modal-gestor-objetivo" style="display: none;">
+<div class="modal-container" style="max-width: 900px; width: 90%;">
+<div class="modal-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.05)); border-bottom: 1px solid rgba(139, 92, 246, 0.3);">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div class="kpi-icon-container" style="background: rgba(139, 92, 246, 0.2); color: var(--purple); width: 40px; height: 40px; border-radius: 10px; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;">
+<i data-lucide="target"></i>
+</div>
+<div>
+<h3 id="gestor-obj-title" style="margin: 0; font-family: var(--font-heading); font-size: 1.2rem; color: #fff;">Título del Objetivo</h3>
+<span id="gestor-obj-category" style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 2px;">Categoría</span>
+</div>
+</div>
+<button class="btn btn-secondary btn-sm" id="btn-close-gestor-obj"><i data-lucide="x"></i></button>
+</div>
+<div class="modal-body" style="max-height: 65vh; overflow-y: auto; padding: 20px;">
+<div class="glass-card" style="padding: 15px; margin-bottom: 20px; border-left: 4px solid var(--purple);">
+<p id="gestor-obj-desc" style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-color); line-height: 1.5;"></p>
+<div style="font-size: 0.8rem; color: var(--text-muted);">
+<strong>KPI: </strong> <span id="gestor-obj-kpi"></span><br/>
+<strong>Fechas: </strong> <span id="gestor-obj-dates"></span>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+<h4 style="font-family: var(--font-heading); margin: 0; color: #fff;">Etapas de Cumplimiento</h4>
+<button class="btn btn-primary btn-sm" id="btn-add-obj-stage"><i data-lucide="plus"></i> Añadir Etapa</button>
+</div>
+<div class="table-wrapper">
+<table class="custom-table" style="min-width: 100%;">
+<thead>
+<tr>
+<th style="width: 25%;">Etapa</th>
+<th style="width: 40%;">Actividad</th>
+<th style="width: 25%;">Avance (%)</th>
+<th style="width: 10%; text-align: right;">Acciones</th>
+</tr>
+</thead>
+<tbody id="gestor-obj-stages-body">
+<!-- Stages will be rendered here -->
+</tbody>
+</table>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-secondary" id="btn-cancel-gestor-obj">Cerrar</button>
+<button class="btn btn-success" id="btn-save-gestor-obj">Guardar Avance</button>
+</div>
+</div>
+</div>
+<!-- MODAL: VISOR DE FOTO ETIQUETADO -->
+<div class="modal-overlay" id="modal-foto-etiquetado" style="display: none; z-index: 3000; background: rgba(0,0,0,0.85);">
+<div class="modal-content" style="max-width: 800px; background: transparent; box-shadow: none; text-align: center;">
+<img id="etiq-foto-preview" src="" style="max-width: 100%; max-height: 80vh; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"/>
+<div style="margin-top: 20px;">
+<button class="btn btn-primary" onclick="const m = document.getElementById('modal-foto-etiquetado'); m.classList.remove('active'); setTimeout(()=&gt;m.style.display='none', 300)">
+<i data-lucide="x"></i> Cerrar Visor
+          </button>
+</div>
+</div>
+</div>
+<!-- MODAL: VISOR DE FOTO CAPACITACIÓN -->
+<div class="modal-overlay" id="modal-foto-cap" style="display: none; z-index: 3000; background: rgba(0,0,0,0.85);">
+<div class="modal-content" style="max-width: 800px; background: transparent; box-shadow: none; text-align: center;">
+<img id="cap-foto-preview" src="" style="max-width: 100%; max-height: 80vh; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"/>
+<div style="margin-top: 20px;">
+<button class="btn btn-primary" onclick="const m = document.getElementById('modal-foto-cap'); m.classList.remove('active'); setTimeout(()=&gt;m.style.display='none', 300)">
+<i data-lucide="x"></i> Cerrar Visor
+          </button>
+</div>
+</div>
+</div>
+<!-- MODAL: LISTA DE ASISTENTES -->
+<div class="modal-overlay" id="modal-asistentes-cap" style="display: none; z-index: 3000;">
+<div class="modal-content" style="max-width: 600px;">
+<h3 style="margin-top:0;"><i data-lucide="users"></i> Lista de Asistentes</h3>
+<p id="cap-asistentes-desc" style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;"></p>
+<div class="table-responsive" style="max-height:50vh; overflow-y:auto;">
+<table class="custom-table" style="width:100%;">
+<thead><tr><th>Nombre Completo</th><th>Legajo</th><th>Área</th></tr></thead>
+<tbody id="tbody-modal-asistentes"></tbody>
+</table>
+</div>
+<div class="modal-actions" style="margin-top:20px; text-align:right;">
+<button class="btn btn-primary" onclick="const m = document.getElementById('modal-asistentes-cap'); m.classList.remove('active'); setTimeout(()=&gt;m.style.display='none', 300)">Cerrar</button>
+</div>
+</div>
+</div>
+
+    <!-- BOTÓN INFO LEGAL (Flotante) -->
+    <button id="btn-info-legal" class="btn btn-secondary" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; padding: 6px 12px; background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(4px);">
+      <i data-lucide="info" style="width: 14px; height: 14px;"></i>
+      Informaci&oacute;n Legal
+    </button>
+
+    <!-- MODAL INFO LEGAL -->
+    <div class="modal-overlay" id="modal-info-legal" style="display: none; z-index: 10000;">
+      <div class="glass-card" style="width: 400px; padding: 30px; text-align: center; border-top: 4px solid var(--primary);">
+        <h2 style="margin-bottom: 15px; color: var(--primary);">Informaci&oacute;n del Sistema</h2>
+        <p style="margin-bottom: 10px; color: #fbbf24; font-weight: bold;">
+          <i data-lucide="alert-triangle" style="width:16px; height:16px; display:inline-block; vertical-align:middle; margin-right:5px;"></i>
+          Software DEMO en fase de construcci&oacute;n
+        </p>
+        <p style="margin-bottom: 10px; font-size: 0.9rem; color: var(--text-muted);">
+          Desarrollo y prototipado continuo en laboratorio.
+        </p>
+        <hr style="border:0; border-top: 1px solid var(--panel-border); margin: 20px 0;">
+        <p style="margin-bottom: 10px;">
+          Creado y Dise&ntilde;ado por:<br>
+          <strong style="color: white; font-size: 1.1rem;">Jes&uacute;s A. Rodr&iacute;guez</strong>
+        </p>
+        <p style="font-size: 0.8rem; color: #ef4444; margin-top: 20px; border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; border-radius: 4px; background: rgba(239, 68, 68, 0.1);">
+          <strong>&copy; 2026. Todos los derechos reservados.</strong><br>
+          Queda estrictamente prohibida su copia, distribuci&oacute;n o uso indebido sin autorizaci&oacute;n.
+        </p>
+        <div style="margin-top: 25px;">
+          <button class="btn btn-primary" id="btn-cerrar-legal" style="width: 100%;">Entendido</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CAMBIO DE CONTRASEÑA -->
+    <div class="modal-overlay" id="modal-change-password" style="display: none; z-index: 10000;">
+      <div class="glass-card" style="width: 350px;">
+        <h3 style="margin-bottom: 15px; color: #fbbf24;">Actualizaci&oacute;n Obligatoria</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
+          Por razones de seguridad, debe cambiar la contrase&ntilde;a temporal asignada por el Administrador antes de continuar.
+        </p>
+        <div class="form-group">
+          <label>Nueva Contrase&ntilde;a:</label>
+          <input type="password" id="input-new-password" class="form-control" placeholder="Escriba su nueva clave">
+        </div>
+        <button class="btn btn-primary" id="btn-confirm-password" style="width: 100%; margin-top: 10px;">Guardar y Entrar</button>
+      </div>
+    </div>
+
+</body>
+</html>
