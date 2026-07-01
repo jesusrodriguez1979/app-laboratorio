@@ -2,6 +2,33 @@
 // Ajustado para esquema de color Light corporativo Newmont
 
 document.addEventListener('DOMContentLoaded', () => {
+  function switchConsole(targetConsole) {
+    const consoles = [
+      document.getElementById('console-gestion'),
+      document.getElementById('console-inspeccion'),
+      document.getElementById('console-admin'),
+      document.getElementById('console-personal'),
+      document.getElementById('console-visor'),
+      document.getElementById('welcome-screen')
+    ];
+    consoles.forEach(c => {
+      if (c) {
+        if (c.id === targetConsole) {
+          c.classList.remove('hidden');
+        } else {
+          c.classList.add('hidden');
+        }
+      }
+    });
+    // also hide login panel
+    document.getElementById('login-panel').classList.add('hidden');
+    // ensure mainHub is welcome-screen
+    const mainHub = document.getElementById('welcome-screen');
+    if (targetConsole !== 'welcome-screen') {
+        mainHub.classList.add('hidden');
+    }
+  }
+
 
   // INFO LEGAL
   const btnInfoLegal = document.getElementById('btn-info-legal');
@@ -642,19 +669,13 @@ document.addEventListener('DOMContentLoaded', () => {
       alert("Acceso denegado: Se requiere perfil de Analista");
       return;
     }
-    mainHub.classList.add('hidden');
-    consoleGestion.classList.remove('hidden');
-    consoleInspeccion.classList.add('hidden');
-    consoleAdmin.classList.add('hidden');
+    switchConsole('console-gestion');
     activarPestañaSidebar(consoleGestion, 'view-equipos');
     cargarSeccionEquipos();
   });
 
   document.getElementById('btn-enter-inspeccion').addEventListener('click', () => {
-    mainHub.classList.add('hidden');
-    consoleGestion.classList.add('hidden');
-    consoleInspeccion.classList.remove('hidden');
-    consoleAdmin.classList.add('hidden');
+    switchConsole('console-inspeccion');
     activarPestañaSidebar(consoleInspeccion, 'view-insp-estado');
     cargarSeccionInspEstado();
   });
@@ -662,14 +683,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnEnterAdmin = document.getElementById('btn-enter-admin');
   if (btnEnterAdmin) {
     btnEnterAdmin.addEventListener('click', () => {
-      if (sessionUser && sessionUser.role !== 'Administrador' && sessionUser.role !== 'Analista') {
-        alert("Acceso denegado: Se requiere perfil de Administrador");
+      if (sessionUser && sessionUser.role !== 'Administrador') {
+        alert(\"Acceso denegado: Se requiere perfil de Administrador\");
         return;
       }
-      mainHub.classList.add('hidden');
-      consoleGestion.classList.add('hidden');
-      consoleInspeccion.classList.add('hidden');
-      consoleAdmin.classList.remove('hidden');
+      switchConsole('console-admin');
       activarPestañaSidebar(consoleAdmin, 'view-admin-users');
       cargarSeccionAdminUsuarios();
     });
@@ -679,15 +697,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnEnterPersonal = document.getElementById('btn-enter-personal');
   if (btnEnterPersonal) {
     btnEnterPersonal.addEventListener('click', () => {
-      if (sessionUser && sessionUser.role !== 'Administrador') {
-        alert("Acceso denegado: Se requiere perfil de Administrador");
+      if (sessionUser && sessionUser.role !== 'Administrador' && sessionUser.role !== 'Analista') {
+        alert(\"Acceso denegado: Se requiere perfil de Administrador o Analista\");
         return;
       }
-      mainHub.classList.add('hidden');
-      consoleGestion.classList.add('hidden');
-      consoleInspeccion.classList.add('hidden');
-      consoleAdmin.classList.add('hidden');
-      consolePersonal.classList.remove('hidden');
+      switchConsole('console-personal');
       activarPestañaSidebar(consolePersonal, 'view-objetivos');
       
     });
@@ -695,10 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.btn-back-hub').forEach(btn => {
     btn.addEventListener('click', () => {
-      mainHub.classList.remove('hidden');
-      consoleGestion.classList.add('hidden');
-      consoleInspeccion.classList.add('hidden');
-      consoleAdmin.classList.add('hidden');
+      switchConsole('welcome-screen');
       updateWelcomeScreenVisibility();
       if (intervalTimers) {
         clearInterval(intervalTimers);
