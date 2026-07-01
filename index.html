@@ -2444,7 +2444,7 @@
 <!-- Script del Controlador de la Aplicación -->
   <script type="module" src="database.js?v=20260630"></script>
 <script src="global-tables.js"></script>
-<script src="app_v3.js?v=20260624_49" type="module"></script>
+<script src="app_v3.js?v=20260624_50" type="module"></script>
 <script src="inventario.js?v=20260627_2024"></script>
 <script src="tiempos.js?v=20260627_2115"></script>
 <!-- MODAL: GESTOR DE ESTÁNDARES QC -->
@@ -2616,26 +2616,7 @@
     </div>
 
 
-<script>
-  function abrirLegal() {
-    document.getElementById('modal-info-legal').style.display = 'flex';
-  }
-  function cerrarLegal() {
-    document.getElementById('modal-info-legal').style.display = 'none';
-  }
-  
-  // ensure buttons use these
-  document.addEventListener('DOMContentLoaded', function() {
-    var btnInfo = document.getElementById('btn-info-legal');
-    if (btnInfo) {
-      btnInfo.onclick = abrirLegal;
-    }
-    var btnCerrar = document.getElementById('btn-cerrar-legal');
-    if (btnCerrar) {
-      btnCerrar.onclick = cerrarLegal;
-    }
-  });
-</script>
+
 </body>
 
 </html>
