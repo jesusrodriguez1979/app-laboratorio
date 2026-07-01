@@ -340,6 +340,61 @@ document.addEventListener('DOMContentLoaded', () => {
       inicio: iptCampanaInicio.value,
       fin: iptCampanaFin.value
     });
+  // Backup & Restore
+  const btnBackupExport = document.getElementById('btn-tmp-backup-export');
+  const inputBackupImport = document.getElementById('input-tmp-backup');
+
+  if (btnBackupExport) {
+    btnBackupExport.addEventListener('click', async () => {
+      try {
+        const allData = await window.TiemposDB.getAll();
+        const dataStr = JSON.stringify(allData, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup_tiempos_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch(e) {
+        console.error("Error exporting backup", e);
+        alert("Ocurrio un error al crear la copia de seguridad.");
+      }
+    });
+  }
+
+  if (inputBackupImport) {
+    inputBackupImport.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        try {
+          const data = JSON.parse(evt.target.result);
+          if (Array.isArray(data)) {
+            if (confirm(`Se encontraron ${data.length} registros en la copia.\n\nPresiona Aceptar para anexarlos a tu base actual.`)) {
+              for(let item of data) {
+                 delete item.id; // ensure it generates new IDs if needed
+                 await window.TiemposDB.insert(item);
+              }
+              alert("Copia de seguridad restaurada correctamente!");
+              renderDashboard();
+              if (typeof renderTablaActividades === 'function') renderTablaActividades();
+            }
+          } else {
+             alert("El formato del archivo no es valido.");
+          }
+        } catch(error) {
+          console.error("Error importing backup", error);
+          alert("Error critico al leer el archivo de copia.");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = ''; // reset
+    });
+  }
     alert('Fechas de campaña (14x14) actualizadas correctamente.');
     renderDashboard();
   });
