@@ -684,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnEnterAdmin) {
     btnEnterAdmin.addEventListener('click', () => {
       if (sessionUser && sessionUser.role !== 'Administrador') {
-        alert(\"Acceso denegado: Se requiere perfil de Administrador\");
+        alert("Acceso denegado: Se requiere perfil de Administrador");
         return;
       }
       switchConsole('console-admin');
@@ -698,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnEnterPersonal) {
     btnEnterPersonal.addEventListener('click', () => {
       if (sessionUser && sessionUser.role !== 'Administrador' && sessionUser.role !== 'Analista') {
-        alert(\"Acceso denegado: Se requiere perfil de Administrador o Analista\");
+        alert("Acceso denegado: Se requiere perfil de Administrador o Analista");
         return;
       }
       switchConsole('console-personal');
