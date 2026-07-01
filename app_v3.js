@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     // also hide login panel
-    document.getElementById('login-panel').classList.add('hidden');
+    const loginPanel = document.getElementById('view-login'); if (loginPanel) loginPanel.classList.add('hidden');
     // ensure mainHub is welcome-screen
     const mainHub = document.getElementById('welcome-screen');
     if (targetConsole !== 'welcome-screen') {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   inputNewPassword.value = '';
                   pendingUserLogin = null;
                   
-                  document.getElementById('login-panel').classList.add('hidden');
+                  const loginPanel = document.getElementById('view-login'); if (loginPanel) loginPanel.classList.add('hidden');
                   document.getElementById('hub-panel').classList.remove('hidden');
                   updateWelcomeScreenVisibility();
                   
