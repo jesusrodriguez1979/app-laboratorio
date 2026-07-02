@@ -340,15 +340,22 @@ document.addEventListener('DOMContentLoaded', () => {
       inicio: iptCampanaInicio.value,
       fin: iptCampanaFin.value
     });
+    alert("¡Campaña guardada!");
+    renderDashboard();
+  });
   // Backup & Restore
   const btnBackupExport = document.getElementById('btn-tmp-backup-export');
   const inputBackupImport = document.getElementById('input-tmp-backup');
 
   if (btnBackupExport) {
-    btnBackupExport.addEventListener('click', async () => {
+    btnBackupExport.addEventListener('click', () => {
       try {
-        const allData = await window.TiemposDB.getAll();
-        const dataStr = JSON.stringify(allData, null, 2);
+        const exportObj = {
+          categorias: getCategorias(),
+          actividades: getActividades(),
+          campana: getCampana()
+        };
+        const dataStr = JSON.stringify(exportObj, null, 2);
         const blob = new Blob([dataStr], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -360,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
       } catch(e) {
         console.error("Error exporting backup", e);
-        alert("Ocurrio un error al crear la copia de seguridad.");
+        alert("Ocurrió un error al crear la copia de seguridad.");
       }
     });
   }
@@ -370,34 +377,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = async (evt) => {
+      reader.onload = (evt) => {
         try {
           const data = JSON.parse(evt.target.result);
-          if (Array.isArray(data)) {
-            if (confirm(`Se encontraron ${data.length} registros en la copia.\n\nPresiona Aceptar para anexarlos a tu base actual.`)) {
-              for(let item of data) {
-                 delete item.id; // ensure it generates new IDs if needed
-                 await window.TiemposDB.insert(item);
-              }
+          if (data.categorias && data.actividades) {
+            if (confirm(`Se encontraron ${data.actividades.length} registros y ${data.categorias.length} categorías en la copia.\n\nAl restaurar, se SOBRESCRIBIRÁN los datos actuales. ¿Deseas continuar?`)) {
+              saveCategorias(data.categorias);
+              saveActividades(data.actividades);
+              if(data.campana) saveCampana(data.campana);
               alert("Copia de seguridad restaurada correctamente!");
-              renderDashboard();
-              if (typeof renderTablaActividades === 'function') renderTablaActividades();
+              location.reload();
             }
           } else {
-             alert("El formato del archivo no es valido.");
+            alert("El formato del archivo no es válido. Asegúrate de elegir un backup de Tiempos.");
           }
         } catch(error) {
           console.error("Error importing backup", error);
-          alert("Error critico al leer el archivo de copia.");
+          alert("Error al importar la copia.");
         }
       };
       reader.readAsText(file);
       e.target.value = ''; // reset
     });
   }
-    alert('Fechas de campaña (14x14) actualizadas correctamente.');
-    renderDashboard();
-  });
 
   // Set default filter to current day
   const tmpSelectTipo = document.getElementById('tmp-filtro-tipo');
